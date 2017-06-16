@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html ng-app="XUnitToNUnit">
+
+<head>
+    <title>XUnit to NUnit</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+    <script src="assets/js/main.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="assets/css/styles.css">
+</head>
+
+<body ng-controller="ConverterController">
+    <header>
+        <a href=".">
+            <h1>↙ XUnit to NUnit ↘</h1>
+        </a>
+    </header>
+
+    <div class="wrapper">
+        <table class="main-table">
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="text-container">
+                            <textarea name="XUnitInBox" rows="5" ng-model="XUnitIn" ng-change="updateXUnitIn()"></textarea>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="text-container">
+                            <textarea name="NUnitOutBox" rows="5" ng-bind="NUnitOut" disabled></textarea>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
