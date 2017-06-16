@@ -96,4 +96,6 @@ angular.module('XUnitToNUnit', [])
         $scope.updateXUnitIn = function () {
             $scope.NUnitOut = convertCode($scope.XUnitIn);
         }
+        
+        $scope.updateXUnitIn();
     });
