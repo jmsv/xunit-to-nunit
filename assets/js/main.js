@@ -2,6 +2,14 @@ var assertsList = [
     {
         AssertType: 'Equal',
         Criteria: 'Is.EqualTo(',
+        Comparison: true,
+    },
+    {
+        AssertType: 'NotEmpty',
+        Criteria: 'Is.Not.Empty',
+        // NEEDS FIXING - criteria needs to go after first param, e.g.: `Assert.That(AddedInstance.UKIncomeList, Is.Not.Empty);`
+        // See line 53
+        Comparison: false,
     },
 ];
 
@@ -37,8 +45,15 @@ function convertSingleAssert(line, assert) {
         return line;
     }
     var bracketIndex = index + assert.AssertType.length;
-    var criteriaIndex = getCriteriaIndex(line, bracketIndex);
-    line = line.insertAt(criteriaIndex + 1, assert.Criteria);
+
+    if (assert.Comparison) {
+        var criteriaIndex = getCriteriaIndex(line, bracketIndex);
+        line = line.insertAt(criteriaIndex + 1, assert.Criteria);
+    } else {
+        // This is wrong - Is.Etc needs to go after first arg, see line 10
+        line = line.insertAt(bracketIndex + 1, assert.Criteria);
+    }
+
     if (assert.Criteria[assert.Criteria.length - 1] == '(') {
         if (line[line.length - 1] == ';') {
             line = line.insertAt(line.length - 1, ')');
@@ -57,8 +72,8 @@ function convertLineAssert(line) {
     return line;
 }
 
-function addTestFixtureLine(line){
-    if (/^( *public *class \w+Facts *)/.test(line)){
+function addTestFixtureLine(line) {
+    if (/^( *public *class \w+Facts *)/.test(line)) {
         var spaces = '';
         for (var i = 0; i < line.search(/\S/); i++) spaces += ' ';
         line = spaces + '[TestFixture]\n' + line;
@@ -77,7 +92,6 @@ function convertLine(line) {
 
 function convertCode(codeIn) {
     var codeLines = codeIn.split('\n');
-    console.log(codeLines);
 
     for (var i = 0; i < codeLines.length; i++) {
         codeLines[i] = convertLine(codeLines[i]);
@@ -96,6 +110,25 @@ angular.module('XUnitToNUnit', [])
         $scope.updateXUnitIn = function () {
             $scope.NUnitOut = convertCode($scope.XUnitIn);
         }
-        
+
         $scope.updateXUnitIn();
     });
+
+function showCopiedSnackbar() {
+    // Get the snackbar DIV
+    var x = document.getElementById("snackbar")
+
+    // Add the "show" class to DIV
+    x.className = "show";
+
+    // After 3 seconds, remove the show class from DIV
+    setTimeout(function () {
+        x.className = x.className.replace("show", "");
+    }, 3000);
+}
+
+function loadPage() {
+    new Clipboard('.clipboard');
+}
+
+window.onload = loadPage;
