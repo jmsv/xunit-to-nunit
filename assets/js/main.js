@@ -1,3 +1,4 @@
+// Assert calls to be converted should be listed here:
 var assertsList = [
     {
         AssertType: 'Equal',
@@ -12,6 +13,11 @@ var assertsList = [
     {
         AssertType: 'NotEqual',
         Criteria: 'Is.Not.EqualTo(',
+        Comparison: true,
+    },
+    {
+        AssertType: 'Contains',
+        Criteria: 'Does.Contain(',
         Comparison: true,
     },
 ];
