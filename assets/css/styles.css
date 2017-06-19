@@ -33,20 +33,24 @@ a {
 
 header {
     text-align: center;
-    color: darkcyan;
+    color: #179595;
     margin-top: -1em;
     margin-bottom: 1em;
+    text-shadow: 0 3px 2px rgba(0, 0, 0, 0.1);
 }
 
 header h1 {
     font-family: 'Ubuntu', sans-serif;
     font-size: 2em;
-    text-shadow: 0 3px 2px rgba(0, 0, 0, 0.1);
     margin: 0;
 }
 
-header a {
+a {
     text-decoration: none;
+}
+
+a:hover {
+    text-shadow: 0 3px 4px rgba(0, 0, 0, 0.05);
 }
 
 .main-table {
@@ -76,14 +80,15 @@ header a {
 .text-container {
     height: 100%;
     margin: auto;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+    min-width: 120px;
 }
 
 textarea {
     width: 100%;
     resize: none;
     padding: 12px 20px;
-    border: 2px solid darkcyan;
+    border: 2px solid #179595;
     border-radius: 5px;
     background-color: #fbfbfb;
     font-family: 'Consolas', monospace;
@@ -92,5 +97,14 @@ textarea {
 }
 
 h4 {
-    color: #666;
+    color: #444;
+}
+
+.github-icon {
+    width: 16px;
+    margin-bottom: -2px;
+}
+
+.github-icon-box {
+    color: #006565;
 }

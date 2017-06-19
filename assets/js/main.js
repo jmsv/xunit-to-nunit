@@ -87,7 +87,6 @@ function getStandaloneCriteriaIndex(line) {
 }
 
 function convertSingleAssert(line, assert) {
-    console.log(line);
     var assertCallName = 'Assert.' + assert.AssertType;
     var index = line.indexOf(assertCallName);
     if (index < 0) {
