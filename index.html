@@ -12,32 +12,33 @@
 </head>
 
 <body ng-controller="ConverterController">
-    <header>
-        <a href=".">
-            <h1>↙ XUnit to NUnit ↘</h1>
-        </a>
-    </header>
-
-    <div class="wrapper">
-        <table class="main-table">
-            <tbody>
-                <tr>
-                    <td>
-                        <div class="text-container">
-                            <h4>Paste XUnit test into this box</h4>
-                            <textarea id="XUnitInBox" rows="5" ng-model="XUnitIn" ng-change="updateXUnitIn()"></textarea>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="text-container" onclick="showCopiedSnackbar()">
-                            <h4>Click result to copy to clipboard</h4>
-                            <textarea id="NUnitOutBox" class="clipboard" data-clipboard-text="{{NUnitOut}}" rows="5" ng-bind="NUnitOut" disabled></textarea>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <table class="main-table">
+        <tbody>
+            <tr class="tr-header">
+                <th colspan="2">
+                    <header>
+                        <a href=".">
+                            <h1>↙ XUnit to NUnit ↘</h1>
+                        </a>
+                    </header>
+                </th>
+            </tr>
+            <tr class="tr-content">
+                <td>
+                    <div class="text-container">
+                        <h4>Paste XUnit test into this box</h4>
+                        <textarea id="XUnitInBox" rows="5" ng-model="XUnitIn" ng-change="updateXUnitIn()" spellcheck="false"></textarea>
+                    </div>
+                </td>
+                <td>
+                    <div class="text-container" onclick="showCopiedSnackbar()">
+                        <h4>Click result to copy to clipboard</h4>
+                        <textarea id="NUnitOutBox" class="clipboard" data-clipboard-text="{{NUnitOut}}" rows="5" ng-bind="NUnitOut" disabled></textarea>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
     <div id="snackbar">Copied NUnit test to clipboard</div>
 </body>

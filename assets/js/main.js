@@ -7,9 +7,12 @@ var assertsList = [
     {
         AssertType: 'NotEmpty',
         Criteria: 'Is.Not.Empty',
-        // NEEDS FIXING - criteria needs to go after first param, e.g.: `Assert.That(AddedInstance.UKIncomeList, Is.Not.Empty);`
-        // See line 53
         Comparison: false,
+    },
+    {
+        AssertType: 'NotEqual',
+        Criteria: 'Is.Not.EqualTo(',
+        Comparison: true,
     },
 ];
 
@@ -17,48 +20,89 @@ String.prototype.insertAt = function (index, string) {
     return this.substr(0, index) + string + this.substr(index);
 }
 
-function getCriteriaIndex(line, startIndex) {
+function getEndOfParamIndex(line, startOfParamIndex) {
+    if (line == '/\S/') return '';
     var countParenthesis = 0;
     var countBracket = 0;
     var inQuote = false;
     var inDoubleQuote = false;
-    for (var i = startIndex + 1; i <= line.length; i++) {
+    for (var i = startOfParamIndex; i <= line.length; i++) {
         if (line[i] == '(') countParenthesis += 1;
         if (line[i] == ')') countParenthesis -= 1;
         if (line[i] == '[') countBracket += 1;
-        if (line[i] == ']') countBracket += 1;
+        if (line[i] == ']') countBracket -= 1;
         if (line[i] == '\'') inQuote = !inQuote;
         if (line[i] == '"') inDoubleQuote = !inDoubleQuote;
-        if (countParenthesis == 0 &
-            countBracket == 0 &
-            !inQuote &
-            !inDoubleQuote &
-            line[i] == ',') {
+        if (line[i] == ';') {
+            return i - 1;
+        }
+        if (line[i] == ',') {
+            if (countParenthesis == 0 &
+                countBracket == 0 &
+                !inQuote &
+                !inDoubleQuote) {
+                return i;
+            }
+        }
+    }
+    return line.length;
+}
+
+function getCriteriaIndex(line, startIndex) {
+    getEndOfParamIndex(line, startIndex);
+}
+
+function getNextParamStartIndex(line, endOfFirstParamIndex) {
+    for (var i = endOfFirstParamIndex; i < line.length; i++) {
+        if (!(line[i] == ',' | line[i] == '/\S/')) {
+            return i;
+        }
+    }
+}
+
+function swapTwoAssertParams(line, openBracketIndex) {
+    if (line[openBracketIndex] != '(') {
+        return 'invalid openBracketIndex supplied';
+    }
+    var firstParamEndIndex = getEndOfParamIndex(line, openBracketIndex + 1);
+    var paramFirst = line.substring(openBracketIndex + 1, firstParamEndIndex);
+    var secondParamStartIndex = getNextParamStartIndex(line, firstParamEndIndex + 1);
+    var secondParamEndIndex = getEndOfParamIndex(line, getEndOfParamIndex(line, secondParamStartIndex));
+    var paramSecond = line.substring(secondParamStartIndex + 1, secondParamEndIndex);
+    return line.substring(0, openBracketIndex) + '(' + paramSecond + ', ' + paramFirst + ');';
+}
+
+function getStandaloneCriteriaIndex(line) {
+    for (var i = line.length - 1; i > 0; i--) {
+        if (!(line[i] == ')' | line[i] == ';')) {
             return i + 1;
         }
     }
 }
 
 function convertSingleAssert(line, assert) {
-    var index = line.indexOf(assert.AssertType);
+    console.log(line);
+    var assertCallName = 'Assert.' + assert.AssertType;
+    var index = line.indexOf(assertCallName);
     if (index < 0) {
         return line;
     }
-    var bracketIndex = index + assert.AssertType.length;
+    var bracketIndex = index + assertCallName.length;
 
     if (assert.Comparison) {
-        var criteriaIndex = getCriteriaIndex(line, bracketIndex);
+        line = swapTwoAssertParams(line, bracketIndex);
+        var criteriaIndex = getEndOfParamIndex(line, bracketIndex + 1) + 1;
         line = line.insertAt(criteriaIndex + 1, assert.Criteria);
     } else {
-        // This is wrong - Is.Etc needs to go after first arg, see line 10
-        line = line.insertAt(bracketIndex + 1, assert.Criteria);
+        var insertIndex = getStandaloneCriteriaIndex(line)
+        line = line.insertAt(insertIndex, ', ' + assert.Criteria);
     }
 
     if (assert.Criteria[assert.Criteria.length - 1] == '(') {
         if (line[line.length - 1] == ';') {
             line = line.insertAt(line.length - 1, ')');
         } else {
-            line = line + ')';
+            line += ')';
         }
     }
     line = line.replace(assert.AssertType, 'That');
@@ -82,8 +126,9 @@ function addTestFixtureLine(line) {
 }
 
 function convertLine(line) {
-    line = line.replace("using Xunit", "using NUnit.Framework");
+    line = line.replace("using Xunit;", "using NUnit.Framework;");
     line = convertLineAssert(line);
+    line = line.replace("using Xunit;", "using NUnit.Framework;");
     line = line.replace('[Fact]', '[Test]');
     line = line.replace('InlineData', 'TestCase');
     line = addTestFixtureLine(line);
@@ -97,15 +142,21 @@ function convertCode(codeIn) {
         codeLines[i] = convertLine(codeLines[i]);
     }
 
+    for (var i = codeLines.length - 1; i--;) {
+        if (codeLines[i] === 'using Xunit.Abstractions;') {
+            codeLines.splice(i, 1);
+        }
+    }
+
     var codeOut = codeLines.join('\n');
-    return codeOut;
+    return codeOut + '\n';
 }
 
 angular.module('XUnitToNUnit', [])
     .controller('ConverterController', function ($scope) {
         var ConverterController = this;
-        $scope.XUnitIn = "Assert.Equal(32, emp.Id.Length);\nAssert.Equal(\"simple\", emp.Name);";
-        $scope.NUnitOut = "using NUnit.Framework;";
+        $scope.XUnitIn = "using Xunit;\nusing Xunit.Abstractions;\n\nAssert.Equal(32, emp.Id.Length);\nAssert.Equal(\"simple\", emp.Name);\nAssert.NotEmpty(AddedInstance.UKIncomeList);\nAssert.Equal(tradeView.AccountingPeriods.ToArray()[1].Id, trd.Id);\nAssert.NotEqual(xyzName, abcName);";
+        $scope.NUnitOut = "";
 
         $scope.updateXUnitIn = function () {
             $scope.NUnitOut = convertCode($scope.XUnitIn);
