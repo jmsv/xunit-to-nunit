@@ -1,4 +1,4 @@
-// Assert calls to be converted should be listed here:
+// Assert calls to be converted are listed here
 var assertsList = [
     {
         AssertType: 'Equal',
@@ -23,6 +23,7 @@ var assertsList = [
 ];
 
 
+// This test is loaded into the XUnit paste box on page load
 var exampleTest = `using Xunit;
 using Xunit.Abstractions;
 
@@ -52,11 +53,14 @@ public class SomeTests
 `;
 
 
+// Gives strings the 'insertAt' method for inserting substring into string at index
 String.prototype.insertAt = function (index, string) {
     return this.substr(0, index) + string + this.substr(index);
 }
 
 
+// Get index of the end of a parameter based on it's start index
+// Skips over brackets and quotes to reach the end of the parameter
 function getEndOfParamIndex(line, startOfParamIndex) {
     if (line == '/\S/') return '';
     var countParenthesis = 0;
@@ -86,11 +90,13 @@ function getEndOfParamIndex(line, startOfParamIndex) {
 }
 
 
+// Get index of string where Assert.That criteria should be inserted
 function getCriteriaIndex(line, startIndex) {
     getEndOfParamIndex(line, startIndex);
 }
 
 
+// Gets start index of a parameter based on the ending index of the first parameter
 function getNextParamStartIndex(line, endOfFirstParamIndex) {
     for (var i = endOfFirstParamIndex; i < line.length; i++) {
         if (!(line[i] == ',' | line[i] == '/\S/')) {
@@ -100,6 +106,8 @@ function getNextParamStartIndex(line, endOfFirstParamIndex) {
 }
 
 
+// Swaps two Assert params, e.g. 'Assert.Equal("one", getOne())' to 'Assert.Equal(getOne(), "one")'
+// Necassary because XUnit and NUnit's 'expected' and 'actual' parameters are reversed
 function swapTwoAssertParams(line, openBracketIndex) {
     if (line[openBracketIndex] != '(') {
         return 'invalid openBracketIndex supplied';
@@ -113,6 +121,7 @@ function swapTwoAssertParams(line, openBracketIndex) {
 }
 
 
+// Where to put criteria string for non-comparison Asserts
 function getStandaloneCriteriaIndex(line) {
     for (var i = line.length - 1; i > 0; i--) {
         if (!(line[i] == ')' | line[i] == ';')) {
@@ -122,6 +131,7 @@ function getStandaloneCriteriaIndex(line) {
 }
 
 
+// Converts Asserts for a single line for a single assert
 function convertSingleAssert(line, assert) {
     var assertCallName = 'Assert.' + assert.AssertType;
     var index = line.indexOf(assertCallName);
@@ -151,6 +161,7 @@ function convertSingleAssert(line, assert) {
 }
 
 
+// Converts Assert statements for each Assert type in assertsList (line 1)
 function convertLineAssert(line) {
     for (var i = 0; i < assertsList.length; i++) {
         line = convertSingleAssert(line, assertsList[i])
@@ -159,8 +170,9 @@ function convertLineAssert(line) {
 }
 
 
+// Adds [TestFixture] above classes named {name}Facts or {name}Tests
 function addTestFixtureLine(line) {
-    if (/^( *public *class \w+Facts *)/.test(line)) {
+    if (/^( *public *class \w+(Facts|Tests) *)/.test(line)) {
         var spaces = '';
         for (var i = 0; i < line.search(/\S/); i++) spaces += ' ';
         line = spaces + '[TestFixture]\n' + line;
@@ -169,6 +181,7 @@ function addTestFixtureLine(line) {
 }
 
 
+// Convert an individual line
 function convertLine(line) {
     line = line.replace("using Xunit;", "using NUnit.Framework;");
     line = convertLineAssert(line);
@@ -181,6 +194,7 @@ function convertLine(line) {
 }
 
 
+// Main method to convert code
 function convertCode(codeIn) {
     var codeLines = codeIn.split('\n');
 
