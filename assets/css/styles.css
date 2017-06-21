@@ -13,7 +13,7 @@ html {
 
 body {
     font-size: 1em;
-    line-height: 1.5;
+    line-height: 1.2;
     width: 100%;
     margin: 0 auto;
     height: 100%;
@@ -33,13 +33,12 @@ a {
 
 header {
     text-align: center;
-    color: #179595;
-    margin-top: -1em;
     margin-bottom: 1em;
     text-shadow: 0 3px 2px rgba(0, 0, 0, 0.1);
 }
 
 header h1 {
+    color: #179595;
     font-family: 'Ubuntu', sans-serif;
     font-size: 2em;
     margin: 0;
@@ -57,7 +56,8 @@ a:hover {
     width: 100%;
     height: 100%;
     position: absolute;
-    padding: 2em;
+    padding: 1.8em;
+    padding-bottom: 0em;
 }
 
 .main-table td {
@@ -69,7 +69,15 @@ a:hover {
     right: 0;
 }
 
+.main-table th {
+    padding: 0px 10px;
+}
+
 .tr-header {
+    height: 0%;
+}
+
+.tr-small {
     height: 0%;
 }
 
@@ -80,7 +88,7 @@ a:hover {
 .text-container {
     height: 100%;
     margin: auto;
-    min-width: 120px;
+    min-width: 160px;
 }
 
 textarea {
@@ -106,4 +114,13 @@ h4 {
 
 .github-icon-box {
     color: #006565;
+    display:inline-block;
+}
+
+footer p {
+    margin: 0;
+    padding: 0;
+    margin-top: -1em;
+    text-align: right;
+    color: #888;
 }

@@ -22,9 +22,40 @@ var assertsList = [
     },
 ];
 
+
+var exampleTest = `using Xunit;
+using Xunit.Abstractions;
+
+public class SomeTests
+{
+    [Fact]
+    public void Test1()
+    {
+        string testString = "avocado";
+
+        Assert.NotEmpty(testString);
+        Assert.Equal("avocado", testString);
+        Assert.NotEqual("potato", testString);
+        Assert.Contains("avo", testString);
+    }
+ 
+    [Theory]
+    [InlineData(5, 15)]
+    [InlineData(6, 18)]
+    [InlineData(7, 21)]
+    public void Test2(int number1, int number2)
+    {
+        var result = number2 / number1;
+        Assert.Equal(3, result);
+    }
+}
+`;
+
+
 String.prototype.insertAt = function (index, string) {
     return this.substr(0, index) + string + this.substr(index);
 }
+
 
 function getEndOfParamIndex(line, startOfParamIndex) {
     if (line == '/\S/') return '';
@@ -54,9 +85,11 @@ function getEndOfParamIndex(line, startOfParamIndex) {
     return line.length;
 }
 
+
 function getCriteriaIndex(line, startIndex) {
     getEndOfParamIndex(line, startIndex);
 }
+
 
 function getNextParamStartIndex(line, endOfFirstParamIndex) {
     for (var i = endOfFirstParamIndex; i < line.length; i++) {
@@ -65,6 +98,7 @@ function getNextParamStartIndex(line, endOfFirstParamIndex) {
         }
     }
 }
+
 
 function swapTwoAssertParams(line, openBracketIndex) {
     if (line[openBracketIndex] != '(') {
@@ -78,6 +112,7 @@ function swapTwoAssertParams(line, openBracketIndex) {
     return line.substring(0, openBracketIndex) + '(' + paramSecond + ', ' + paramFirst + ');';
 }
 
+
 function getStandaloneCriteriaIndex(line) {
     for (var i = line.length - 1; i > 0; i--) {
         if (!(line[i] == ')' | line[i] == ';')) {
@@ -85,6 +120,7 @@ function getStandaloneCriteriaIndex(line) {
         }
     }
 }
+
 
 function convertSingleAssert(line, assert) {
     var assertCallName = 'Assert.' + assert.AssertType;
@@ -114,12 +150,14 @@ function convertSingleAssert(line, assert) {
     return line;
 }
 
+
 function convertLineAssert(line) {
     for (var i = 0; i < assertsList.length; i++) {
         line = convertSingleAssert(line, assertsList[i])
     }
     return line;
 }
+
 
 function addTestFixtureLine(line) {
     if (/^( *public *class \w+Facts *)/.test(line)) {
@@ -130,15 +168,18 @@ function addTestFixtureLine(line) {
     return line;
 }
 
+
 function convertLine(line) {
     line = line.replace("using Xunit;", "using NUnit.Framework;");
     line = convertLineAssert(line);
     line = line.replace("using Xunit;", "using NUnit.Framework;");
     line = line.replace('[Fact]', '[Test]');
-    line = line.replace('InlineData', 'TestCase');
+    line = line.replace('[InlineData', '[TestCase');
+    line = line.replace('[ClassData', '[TestCaseSource');
     line = addTestFixtureLine(line);
     return line;
 }
+
 
 function convertCode(codeIn) {
     var codeLines = codeIn.split('\n');
@@ -157,10 +198,26 @@ function convertCode(codeIn) {
     return codeOut + '\n';
 }
 
+
+function showCopiedSnackbar() {
+    var x = document.getElementById("snackbar")
+    x.className = "show";
+    setTimeout(function () {
+        x.className = x.className.replace("show", "");
+    }, 3000);
+}
+
+
+function loadPage() {
+    new Clipboard('.clipboard');
+}
+window.onload = loadPage;
+
+
 angular.module('XUnitToNUnit', [])
     .controller('ConverterController', function ($scope) {
         var ConverterController = this;
-        $scope.XUnitIn = "using Xunit;\nusing Xunit.Abstractions;\n\nAssert.Equal(32, emp.Id.Length);\nAssert.Equal(\"simple\", emp.Name);\nAssert.NotEmpty(AddedInstance.UKIncomeList);\nAssert.Equal(tradeView.AccountingPeriods.ToArray()[1].Id, trd.Id);\nAssert.NotEqual(xyzName, abcName);";
+        $scope.XUnitIn = exampleTest;
         $scope.NUnitOut = "";
 
         $scope.updateXUnitIn = function () {
@@ -169,22 +226,3 @@ angular.module('XUnitToNUnit', [])
 
         $scope.updateXUnitIn();
     });
-
-function showCopiedSnackbar() {
-    // Get the snackbar DIV
-    var x = document.getElementById("snackbar")
-
-    // Add the "show" class to DIV
-    x.className = "show";
-
-    // After 3 seconds, remove the show class from DIV
-    setTimeout(function () {
-        x.className = x.className.replace("show", "");
-    }, 3000);
-}
-
-function loadPage() {
-    new Clipboard('.clipboard');
-}
-
-window.onload = loadPage;
