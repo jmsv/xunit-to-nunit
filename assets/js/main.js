@@ -187,6 +187,7 @@ function convertLine(line) {
     line = convertLineAssert(line);
     line = line.replace("using Xunit;", "using NUnit.Framework;");
     line = line.replace('[Fact]', '[Test]');
+    line = line.replace('[Theory]', '[Test]');
     line = line.replace('[InlineData', '[TestCase');
     line = line.replace('[ClassData', '[TestCaseSource');
     line = addTestFixtureLine(line);
