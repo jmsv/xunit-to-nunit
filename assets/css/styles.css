@@ -18,7 +18,7 @@ body {
     margin: 0 auto;
     height: 100%;
     padding: 0;
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Lato', sans-serif;
     background: #eee;
 }
 
@@ -39,7 +39,7 @@ header {
 
 header h1 {
     color: #179595;
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-size: 2em;
     margin: 0;
 }
