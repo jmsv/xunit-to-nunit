@@ -47,7 +47,7 @@ var assertsList = [
     {
         XUnitAssert: 'False',
         NUnitAssert: 'IsFalse'
-    }
+    },
 ];
 
 
@@ -72,6 +72,10 @@ var otherSyntaxDifferenceList = [
     {
         XUnitSyntax: 'ClassData(',
         NUnitSyntax: 'TestCaseSource('
+    },
+    {
+        XUnitSyntax: 'Assert.Contains("',
+        NUnitSyntax: 'StringAssert.Contains("'
     },
 ]
 
@@ -146,6 +150,7 @@ function convertLine(line) {
         var n = otherSyntaxDifferenceList[i].NUnitSyntax;
         line = line.replace(x, n);
     }
+    
     return line;
 }
 
