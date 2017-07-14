@@ -1,0 +1,33 @@
+{
+  "name": "xunit-to-nunit",
+  "version": "0.1.0",
+  "description": "Converts C# XUnit tests to NUnit tests",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jamesevickery/xunit-to-nunit.git"
+  },
+  "keywords": [
+    "xunit",
+    "nunit",
+    "c-sharp",
+    "dotnet",
+    "unit-testing",
+    "converter",
+    "parser"
+  ],
+  "author": "James Vickery <jamesevickery.dev@gmail.com> (http://jamesevickery.github.io)",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/jamesevickery/xunit-to-nunit/blob/master/LICENSE"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/jamesevickery/xunit-to-nunit/issues"
+  },
+  "homepage": "https://github.com/jamesevickery/xunit-to-nunit#readme"
+}

@@ -80,35 +80,6 @@ var otherSyntaxDifferenceList = [
 ]
 
 
-// This test is loaded into the XUnit paste box on page load
-var exampleTest = `using Xunit;
-using Xunit.Abstractions;
-
-public class SomeTests
-{
-    [Fact]
-    public void Test1()
-    {
-        string testString = "avocado";
-
-        Assert.NotEmpty(testString);
-        Assert.Equal("avocado", testString);
-        Assert.NotEqual("potato", testString);
-    }
- 
-    [Theory]
-    [InlineData(5, 15)]
-    [InlineData(6, 18)]
-    [InlineData(7, 21)]
-    public void Test2(int number1, int number2)
-    {
-        var result = number2 / number1;
-        Assert.Equal(3, result);
-    }
-}
-`;
-
-
 // Converts Assert statements for each Assert type in assertsList (line 1)
 function convertLineAssert(line) {
     for (var i = 0; i < assertsList.length; i++) {
@@ -144,13 +115,13 @@ function removeLineFromList(linesList, searchString) {
 function convertLine(line) {
     line = convertLineAssert(line);
     line = addTestFixtureLine(line);
-    
+
     for (var i = 0; i < otherSyntaxDifferenceList.length; i++) {
         var x = otherSyntaxDifferenceList[i].XUnitSyntax;
         var n = otherSyntaxDifferenceList[i].NUnitSyntax;
         line = line.replace(x, n);
     }
-    
+
     return line;
 }
 
@@ -172,34 +143,7 @@ function convertCode(codeIn) {
 }
 
 
-// Display message when converted test has been copied
-function showCopiedSnackbar() {
-    var x = document.getElementById("snackbar")
-    x.className = "show";
-    setTimeout(function () {
-        x.className = x.className.replace("show", "");
-    }, 3000);
-}
-
-
-// Function to run when page loads
-function loadPage() {
-    // Initialise clipboard
-    new Clipboard('.clipboard');
-}
-window.onload = loadPage; // Runs above function
-
-
-// Set up Angular module, with controller
-angular.module('XUnitToNUnit', [])
-    .controller('ConverterController', function ($scope) {
-        var ConverterController = this;
-        $scope.XUnitIn = exampleTest;
-        $scope.NUnitOut = "";
-
-        $scope.updateXUnitIn = function () {
-            $scope.NUnitOut = convertCode($scope.XUnitIn);
-        }
-
-        $scope.updateXUnitIn();
-    });
+module.exports = {
+    convertCode: convertCode(codeIn),
+    convertLine: convertLine(line)
+};
