@@ -1,6 +1,5 @@
 // Assert calls to be converted are listed here
-var assertsList = [
-    {
+var assertsList = [{
         XUnitAssert: 'Equal',
         NUnitAssert: 'AreEqual'
     },
@@ -52,8 +51,7 @@ var assertsList = [
 
 
 // Other differences between XUnit and NUnit that should be converted
-var otherSyntaxDifferenceList = [
-    {
+var otherSyntaxDifferenceList = [{
         XUnitSyntax: 'using Xunit;',
         NUnitSyntax: 'using NUnit.Framework;'
     },
@@ -144,6 +142,10 @@ function convertCode(codeIn) {
 
 
 module.exports = {
-    convertCode: convertCode(codeIn),
-    convertLine: convertLine(line)
+    convertCode: function(codeIn) {
+        return convertCode(codeIn);
+    },
+    convertLine: function(line) {
+        return convertLine(line);
+    }
 };
