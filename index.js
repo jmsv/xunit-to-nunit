@@ -137,5 +137,5 @@ exports.convertCode = function (codeIn) {
 
     // Join list of lines to form newline seperated string
     var codeOut = codeLines.join('\n');
-    return codeOut + '\n';
+    return codeOut;
 }
