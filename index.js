@@ -110,7 +110,7 @@ function removeLineFromList(linesList, searchString) {
 
 
 // Convert line from XUnit syntax to NUnit syntax, including Assert statements
-function convertLine(line) {
+exports.convertLine = function (line) {
     line = convertLineAssert(line);
     line = addTestFixtureLine(line);
 
@@ -125,12 +125,12 @@ function convertLine(line) {
 
 
 // Main method to convert code
-function convertCode(codeIn) {
+exports.convertCode = function (codeIn) {
     // Split code into list, breaking at newlines
     var codeLines = codeIn.split('\n');
 
     for (var i = 0; i < codeLines.length; i++) {
-        codeLines[i] = convertLine(codeLines[i]);
+        codeLines[i] = exports.convertLine(codeLines[i]);
     }
 
     codeLines = removeLineFromList(codeLines, 'using Xunit.Abstractions;');
@@ -139,13 +139,3 @@ function convertCode(codeIn) {
     var codeOut = codeLines.join('\n');
     return codeOut + '\n';
 }
-
-
-module.exports = {
-    convertCode: function(codeIn) {
-        return convertCode(codeIn);
-    },
-    convertLine: function(line) {
-        return convertLine(line);
-    }
-};
