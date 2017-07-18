@@ -1,7 +1,7 @@
 var should = require('chai').should(),
-    x2n = require('../index'),
-    convertCode = x2n.convertCode,
-    convertLine = x2n.convertLine;
+  x2n = require('../index'),
+  convertCode = x2n.convertCode,
+  convertLine = x2n.convertLine;
 
 var testCases = [{
   xunit: `using Xunit;
@@ -57,14 +57,14 @@ public class SomeTests
 }];
 
 
-describe('#convertCode', function() {
-  it('example test is converted correctly', function() {
+describe('#convertCode', function () {
+  it('example test is converted correctly', function () {
     convertCode(testCases[0].xunit).should.equal(testCases[0].nunit);
   });
 });
 
-describe('#convertLine', function() {
-  it('using <framework> statement converted', function() {
+describe('#convertLine', function () {
+  it('using <framework> statement converted', function () {
     convertLine('using Xunit;').should.equal('using NUnit.Framework;');
   });
 });
