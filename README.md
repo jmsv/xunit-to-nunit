@@ -12,9 +12,13 @@ _Disclaimer: Far from perfect - used as a quick hack to convert loads of large t
 
 ## Usage
 
-    var converter = require('xunit-to-nunit')
+    var converter = require('xunit-to-nunit');
 
     nunitTest = converter.convertCode(xunitTest);
+
+## Contributing
+
+Feel free to add things / suggest things to be added by either [opening an issue](https://github.com/jamesevickery/xunit-to-nunit/issues) or by submitting a pull request.
 
 ## References
 

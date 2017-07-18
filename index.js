@@ -75,7 +75,7 @@ var otherSyntaxDifferenceList = [{
     XUnitSyntax: 'Assert.Contains("',
     NUnitSyntax: 'StringAssert.Contains("'
   },
-]
+];
 
 
 // Converts Assert statements for each Assert type in assertsList (line 1)
@@ -105,12 +105,12 @@ function removeLineFromList(linesList, searchString) {
   for (var i = linesList.length - 1; i--;) {
     if (linesList[i] === searchString) linesList.splice(i, 1);
   }
-  return linesList
+  return linesList;
 }
 
 
 // Convert line from XUnit syntax to NUnit syntax, including Assert statements
-exports.convertLine = function (line) {
+module.exports.convertLine = function (line) {
   line = convertLineAssert(line);
   line = addTestFixtureLine(line);
 
@@ -121,16 +121,16 @@ exports.convertLine = function (line) {
   }
 
   return line;
-}
+};
 
 
 // Main method to convert code
-exports.convertCode = function (codeIn) {
+module.exports.convertCode = function (codeIn) {
   // Split code into list, breaking at newlines
   var codeLines = codeIn.split('\n');
 
   for (var i = 0; i < codeLines.length; i++) {
-    codeLines[i] = exports.convertLine(codeLines[i]);
+    codeLines[i] = module.exports.convertLine(codeLines[i]);
   }
 
   codeLines = removeLineFromList(codeLines, 'using Xunit.Abstractions;');
@@ -138,4 +138,4 @@ exports.convertCode = function (codeIn) {
   // Join list of lines to form newline seperated string
   var codeOut = codeLines.join('\n');
   return codeOut;
-}
+};

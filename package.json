@@ -4,7 +4,8 @@
   "description": "Converts C# XUnit tests to NUnit tests",
   "main": "index.js",
   "scripts": {
-    "test": "node_modules/.bin/mocha --reporter spec"
+    "test": "node_modules/.bin/mocha --reporter spec",
+    "lint": "node_modules/.bin/jshint index.js"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,7 @@
   "homepage": "https://github.com/jamesevickery/xunit-to-nunit#readme",
   "devDependencies": {
     "chai": "^4.1.0",
+    "jshint": "^2.9.5",
     "mocha": "^3.4.2"
   }
 }
