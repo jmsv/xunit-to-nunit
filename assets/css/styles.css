@@ -114,7 +114,7 @@ h4 {
 
 .github-icon-box {
     color: #006565;
-    display:inline-block;
+    display: inline-block;
 }
 
 footer p {
@@ -123,4 +123,11 @@ footer p {
     margin-top: -1em;
     text-align: right;
     color: #888;
+}
+
+.topcorner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 8px 10px;
 }
