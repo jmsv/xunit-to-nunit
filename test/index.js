@@ -1,7 +1,9 @@
 var should = require('chai').should(),
   x2n = require('../index'),
   convertCode = x2n.convertCode,
-  convertLine = x2n.convertLine;
+  convertLine = x2n.convertLine,
+  convertFile = x2n.convertFile;
+
 
 var testCases = [{
   xunit: `using Xunit;
@@ -66,5 +68,12 @@ describe('#convertCode', function () {
 describe('#convertLine', function () {
   it('using <framework> statement converted', function () {
     convertLine('using Xunit;').should.equal('using NUnit.Framework;');
+  });
+});
+
+describe('#convertFile', function () {
+  it('can convert test file', function () {
+    convertFile('test/test1-xunit.cs', 'test/test1-nunit-sync-actual.cs').should.equal(true);
+    // Should check actual = expected
   });
 });

@@ -1,3 +1,6 @@
+var fs = require('fs');
+
+
 // Assert calls to be converted are listed here
 var assertsList = [{
     XUnitAssert: 'Equal',
@@ -138,4 +141,16 @@ module.exports.convertCode = function (codeIn) {
   // Join list of lines to form newline seperated string
   var codeOut = codeLines.join('\n');
   return codeOut;
+};
+
+
+// Method to convert test in file
+module.exports.convertFile = function (source, destination) {
+  var data = fs.readFileSync(source, 'utf-8');
+
+  var converted = module.exports.convertCode(data);
+
+  fs.writeFileSync(destination, converted, 'utf-8');
+
+  return true;
 };
