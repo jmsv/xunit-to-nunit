@@ -1,5 +1,8 @@
 # xunit-to-nunit
 
+[![npm version](https://badge.fury.io/js/xunit-to-nunit.svg)](https://badge.fury.io/js/xunit-to-nunit)
+[![circleci status](https://circleci.com/gh/jamesevickery/xunit-to-nunit.svg?style=shield)](https://circleci.com/gh/jamesevickery/xunit-to-nunit)
+
 Converts C# XUnit tests to NUnit tests.
 
 _Disclaimer: Far from perfect - something I used as a quick hack to convert loads of large tests_
