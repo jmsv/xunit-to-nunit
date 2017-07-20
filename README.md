@@ -12,9 +12,17 @@ _Disclaimer: Far from perfect - used as a quick hack to convert loads of large t
 
 ## Usage
 
-    var converter = require('xunit-to-nunit');
+### Require
 
-    nunitTest = converter.convertCode(xunitTest);
+    var x2n = require('xunit-to-nunit');
+
+### Convert test (string)
+
+    nunitTest = x2n.convertCode(xunitTest);
+
+### Convert test (file)
+
+    x2n.convertFile('xunit-source-path.cs', 'nunit-destination-path.cs');
 
 ## Contributing
 
