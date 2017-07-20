@@ -8,21 +8,29 @@ _Disclaimer: Far from perfect - used as a quick hack to convert loads of large t
 
 ## Installation
 
-    npm install xunit-to-nunit --save
+```bash
+npm install xunit-to-nunit --save
+```
 
 ## Usage
 
 ### Require
 
-    var x2n = require('xunit-to-nunit');
+```javascript
+var x2n = require('xunit-to-nunit');
+```
 
 ### Convert test (string)
 
-    nunitTest = x2n.convertCode(xunitTest);
+```javascript
+var nunitTest = x2n.convertCode(xunitTest);
+```
 
 ### Convert test (file)
 
-    x2n.convertFile('xunit-source-path.cs', 'nunit-destination-path.cs');
+```javascript
+x2n.convertFile('xunit-source-path.cs', 'nunit-destination-path.cs');
+```
 
 ## Contributing
 
