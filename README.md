@@ -2,6 +2,7 @@
 
 [![npm version](https://badge.fury.io/js/xunit-to-nunit.svg)](https://badge.fury.io/js/xunit-to-nunit)
 [![circleci status](https://circleci.com/gh/jamesevickery/xunit-to-nunit.svg?style=shield)](https://circleci.com/gh/jamesevickery/xunit-to-nunit)
+[![Build Status](https://travis-ci.org/jamesevickery/xunit-to-nunit.svg?branch=master)](https://travis-ci.org/jamesevickery/xunit-to-nunit)
 
 Converts C# XUnit tests to NUnit tests.
 
