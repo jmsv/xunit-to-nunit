@@ -4,6 +4,8 @@
 [![circleci status](https://circleci.com/gh/jamesevickery/xunit-to-nunit.svg?style=shield)](https://circleci.com/gh/jamesevickery/xunit-to-nunit)
 [![Build Status](https://travis-ci.org/jamesevickery/xunit-to-nunit.svg?branch=master)](https://travis-ci.org/jamesevickery/xunit-to-nunit)
 
+[![NPM](https://nodei.co/npm/xunit-to-nunit.png)](https://nodei.co/npm/xunit-to-nunit/)
+
 Converts C# XUnit tests to NUnit tests.
 
 _Disclaimer: Far from perfect - something I used as a quick hack to convert loads of large tests_
