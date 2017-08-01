@@ -26,19 +26,19 @@ npm install xunit-to-nunit --save
 ### Require
 
 ```javascript
-var x2n = require('xunit-to-nunit');
+var x2n = require('xunit-to-nunit')
 ```
 
 ### Convert test from string
 
 ```javascript
-var nunitTest = x2n.convertCode(xunitTest);
+var nunitTest = x2n.convertCode(xunitTest)
 ```
 
 ### Convert test from file
 
 ```javascript
-x2n.convertFile('xunit-source-path.cs', 'nunit-destination-path.cs');
+x2n.convertFile('xunit-source-path.cs', 'nunit-destination-path.cs')
 ```
 
 ### Convert tests from directory
@@ -52,6 +52,15 @@ This function calls `convertFile` for all files in the source directory.
 #### Options
 
 `convertFiles` has a third (optional) parameter: `options`. This should be a dictionary value, containing options parameters: at the moment, `recursive` is the only options parameter, which defaults to `false`. Set to `true`, this parameter will convert tests in all subdirectories including those at the source root.
+
+For example,
+
+```javascript
+var options = {
+  recursive: true
+}
+x2n.convertFiles('xunit/source/directory', 'nunit/destination/directory', options)
+```
 
 ## Contributing
 
