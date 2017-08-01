@@ -1,4 +1,6 @@
 var fs = require('fs');
+var path = require('path');
+var glob = require('glob');
 
 
 // Assert calls to be converted are listed here
@@ -106,7 +108,7 @@ function addTestFixtureLine(line) {
 // Remove line from list of lines if matches search string
 function removeLineFromList(linesList, searchString) {
   for (var i = linesList.length - 1; i--;) {
-    if (linesList[i] === searchString) linesList.splice(i, 1);
+    if (linesList[i].indexOf(searchString) > -1) linesList.splice(i, 1);
   }
   return linesList;
 }
@@ -154,3 +156,51 @@ module.exports.convertFile = function (source, destination) {
 
   return true;
 };
+
+
+module.exports.convertFiles = function (sourceDir, destinationDir, options) {
+  optionsTemplate = {
+    recursive: false
+  };
+  options = options || optionsTemplate;
+
+  for (var key in optionsTemplate) {
+    if (!optionsTemplate.hasOwnProperty(key)) continue;
+
+    if (!options.hasOwnProperty(key)) {
+      options[key] = optionsTemplate[key];
+    }
+  }
+
+  if (!fs.existsSync(destinationDir)){
+    throw new Error("NUnit destination doesn't exist. Please create the directory: " + destinationDir);
+  }
+
+  var recurPath = "";
+  if (options.recursive) recurPath = "/**";
+  // Get source file paths, taking into account whether or not to recur into subdirs
+  var sourcePaths = glob.sync(sourceDir + recurPath + "/*.cs");
+  // Resolve to absolute paths
+  for (var i = 0; i < sourcePaths.length; i++) sourcePaths[i] = path.resolve(sourcePaths[i]);
+
+  files = [];
+  for (var i = 0; i < sourcePaths.length; i++) {
+    var relativePath = sourcePaths[i].replace(path.resolve(sourceDir), '');
+
+    // var dir = __dirname + "/";
+    files.push({
+      sourcePath: sourcePaths[i],
+      relativePath: relativePath,
+      destinationPath: destinationDir + relativePath,
+    });
+
+    var dir = path.dirname(files[i].destinationPath);
+    if (!fs.existsSync(dir)){
+      fs.mkdirSync(dir);
+    }
+
+    module.exports.convertFile(files[i].sourcePath, files[i].destinationPath);
+  }
+
+  return true;
+}
