@@ -1,4 +1,5 @@
 var fs = require('fs');
+var glob = require('glob');
 
 
 // Assert calls to be converted are listed here
@@ -154,3 +155,37 @@ module.exports.convertFile = function (source, destination) {
 
   return true;
 };
+
+
+module.exports.convertFiles = function (sourceDir, destinationDir, options={}) {
+  optionsTemplate = {
+    recursive: false
+  };
+
+  for (var key in optionsTemplate) {
+    if (!optionsTemplate.hasOwnProperty(key)) continue;
+
+    if (!options.hasOwnProperty(key)) {
+      options[key] = optionsTemplate[key];
+    }
+  }
+
+  var recurPath = "";
+  if (options.recursive) recurPath = "/**";
+  var sourcePaths = glob.sync(sourceDir + recurPath + "/*.cs");
+
+  files = [];
+  for (var i = 0; i < sourcePaths.length; i++) {
+    var relativePath = sourcePaths[i].replace(sourceDir, '');
+
+    files.push({
+      sourcePath: sourcePaths[i],
+      relativePath: relativePath,
+      destinationPath: destinationDir + relativePath
+    });
+
+    module.exports.convertFile(files[i].sourcePath, files[i].destinationPath);
+  }
+
+  return true;
+}
