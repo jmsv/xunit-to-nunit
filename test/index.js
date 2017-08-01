@@ -151,7 +151,7 @@ describe('#convertFiles', function () {
   it('can convert test files (abs paths)', function (done) {
     var opt = {
       recursive: true
-    }
+    };
     var paths = {
       source: __dirname + '/test3/xunit',
       destination: __dirname + '/test3/nunit-actual',
