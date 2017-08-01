@@ -80,10 +80,17 @@ describe('#convertFile', function () {
 });
 
 describe('#convertFiles', function () {
-  it('can convert test files', function () {
+  it('can convert test files (rel paths)', function () {
     var opt = {
       recursive: true
     }
     convertFiles('test/test2/xunit', 'test/test2/nunit-actual', opt);
+  });
+
+  it('can convert test files (abs paths)', function () {
+    var opt = {
+      recursive: true
+    }
+    convertFiles(__dirname + '/test3/xunit', __dirname + '/test3/nunit-actual', opt);
   });
 });

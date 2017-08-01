@@ -1,4 +1,5 @@
 var fs = require('fs');
+var path = require("path");
 var glob = require('glob');
 
 
@@ -170,19 +171,32 @@ module.exports.convertFiles = function (sourceDir, destinationDir, options={}) {
     }
   }
 
+  if (!fs.existsSync(destinationDir)){
+    throw new Error("NUnit destination doesn't exist. Please create the directory: " + dir);
+  }
+
   var recurPath = "";
   if (options.recursive) recurPath = "/**";
+  // Get source file paths, taking into account whether or not to recur into subdirs
   var sourcePaths = glob.sync(sourceDir + recurPath + "/*.cs");
+  // Resolve to absolute paths
+  for (var i = 0; i < sourcePaths.length; i++) sourcePaths[i] = path.resolve(sourcePaths[i]);
 
   files = [];
   for (var i = 0; i < sourcePaths.length; i++) {
-    var relativePath = sourcePaths[i].replace(sourceDir, '');
+    var relativePath = sourcePaths[i].replace(path.resolve(sourceDir), '');
 
+    // var dir = __dirname + "/";
     files.push({
       sourcePath: sourcePaths[i],
       relativePath: relativePath,
-      destinationPath: destinationDir + relativePath
+      destinationPath: destinationDir + relativePath,
     });
+
+    var dir = path.dirname(files[i].destinationPath);
+    if (!fs.existsSync(dir)){
+      fs.mkdirSync(dir);
+    }
 
     module.exports.convertFile(files[i].sourcePath, files[i].destinationPath);
   }
