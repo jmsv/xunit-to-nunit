@@ -68,51 +68,128 @@ describe('#convertCode', function () {
   });
 });
 
+
 describe('#convertLine', function () {
   it('using <framework> statement converted', function () {
     convertLine('using Xunit;').should.equal('using NUnit.Framework;');
   });
 });
 
+
+function dirsAreEqual(paths, callback) {
+  if (paths.filepath) { // Remove filename
+    paths.destination = path.dirname(paths.destination);
+    paths.expected = path.dirname(paths.expected);
+  }
+
+  dirsum.digest(paths.destination, 'sha1', function (err1, res1) {
+    dirsum.digest(paths.expected, 'sha1', function (err2, res2) {
+      result = {
+        actual: {
+          err: err1,
+          res: res1
+        },
+        expected: {
+          err: err2,
+          res: res2
+        }
+      };
+      // console.log(result.actual.res.hash + "  |  " + result.expected.res.hash);
+      callback(result);
+    });
+  });
+}
+
+
 describe('#convertFile', function () {
   it('can convert test file', function (done) {
     var paths = {
       source: 'test/test1/xunit/test.cs',
       destination: 'test/test1/nunit-actual/test.cs',
-      expected: 'test/test1/nunit-expected/test.cs'
-    }
+      expected: 'test/test1/nunit-expected/test.cs',
+      filepath: true
+    };
+
     convertFile(paths.source, paths.destination).should.equal(true);
 
-    dirsum.digest(path.dirname(paths.destination), 'sha1', function (err1, res1) {
-      dirsum.digest(path.dirname(paths.expected), 'sha1', function (err2, res2) {
-        should.equal(err1, undefined);
-        should.equal(err2, undefined);
-        res1.should.not.equal(undefined);
-        res1.hash.should.equal(res2.hash);
-
-        done();
-      });
+    dirsAreEqual(paths, function(result) {
+      should.equal(result.actual.err, undefined);
+      should.equal(result.expected.err, undefined);
+      result.actual.res.should.not.equal(undefined);
+      result.actual.res.hash.should.equal(result.expected.res.hash);
+      done();
     });
   });
 });
 
+
 describe('#convertFiles', function () {
-  it('can convert test files (rel paths)', function () {
+  it('can convert test files (rel paths)', function (done) {
+    var opt = {
+      recursive: true
+    };
+    var paths = {
+      source: 'test/test2/xunit',
+      destination: 'test/test2/nunit-actual',
+      expected: 'test/test2/nunit-expected',
+      filepath: false
+    };
+
+    convertFiles(paths.source, paths.destination, opt);
+
+    dirsAreEqual(paths, function(result) {
+      should.equal(result.actual.err, undefined);
+      should.equal(result.expected.err, undefined);
+      result.actual.res.should.not.equal(undefined);
+      result.actual.res.hash.should.equal(result.expected.res.hash);
+      done();
+    });
+
+  });
+
+
+  it('can convert test files (abs paths)', function (done) {
     var opt = {
       recursive: true
     }
-    convertFiles('test/test2/xunit', 'test/test2/nunit-actual', opt);
+    var paths = {
+      source: __dirname + '/test3/xunit',
+      destination: __dirname + '/test3/nunit-actual',
+      expected: __dirname + '/test3/nunit-expected',
+      filepath: false
+    };
+
+    convertFiles(paths.source, paths.destination, opt);
+
+    dirsAreEqual(paths, function(result) {
+      should.equal(result.actual.err, undefined);
+      should.equal(result.expected.err, undefined);
+      result.actual.res.should.not.equal(undefined);
+      result.actual.res.hash.should.equal(result.expected.res.hash);
+      done();
+    });
+
   });
 
-  it('can convert test files (abs paths)', function () {
-    var opt = {
-      recursive: true
-    }
-    convertFiles(__dirname + '/test3/xunit', __dirname + '/test3/nunit-actual', opt);
-  });
 
-  it('can convert test files (no options param)', function () {
-    convertFiles('test/test4/xunit', 'test/test4/nunit-actual', {});
+  it('can convert test files (no options param)', function (done) {
+    var paths = {
+      source: 'test/test4/xunit',
+      destination: 'test/test4/nunit-actual',
+      expected: 'test/test4/nunit-expected',
+      filepath: false
+    };
+
+    convertFiles(paths.source, paths.destination);
+
+    dirsAreEqual(paths, function(result) {
+      should.equal(result.actual.err, undefined);
+      should.equal(result.expected.err, undefined);
+      result.actual.res.should.not.equal(undefined);
+      result.actual.res.hash.should.equal(result.expected.res.hash);
+      done();
+    });
+
   });
 
 });
