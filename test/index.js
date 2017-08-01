@@ -1,3 +1,5 @@
+var dirsum = require('dirsum');
+var path = require('path');
 var should = require('chai').should(),
   x2n = require('../index'),
   convertCode = x2n.convertCode,
@@ -73,9 +75,24 @@ describe('#convertLine', function () {
 });
 
 describe('#convertFile', function () {
-  it('can convert test file', function () {
-    convertFile('test/test1-xunit.cs', 'test/test1-nunit-sync-actual.cs').should.equal(true);
-    // Should check actual = expected
+  it('can convert test file', function (done) {
+    var paths = {
+      source: 'test/test1/xunit/test.cs',
+      destination: 'test/test1/nunit-actual/test.cs',
+      expected: 'test/test1/nunit-expected/test.cs'
+    }
+    convertFile(paths.source, paths.destination).should.equal(true);
+
+    dirsum.digest(path.dirname(paths.destination), 'sha1', function (err1, res1) {
+      dirsum.digest(path.dirname(paths.expected), 'sha1', function (err2, res2) {
+        should.equal(err1, undefined);
+        should.equal(err2, undefined);
+        res1.should.not.equal(undefined);
+        res1.hash.should.equal(res2.hash);
+
+        done();
+      });
+    });
   });
 });
 
@@ -93,4 +110,9 @@ describe('#convertFiles', function () {
     }
     convertFiles(__dirname + '/test3/xunit', __dirname + '/test3/nunit-actual', opt);
   });
+
+  it('can convert test files (no options param)', function () {
+    convertFiles('test/test4/xunit', 'test/test4/nunit-actual', {});
+  });
+
 });

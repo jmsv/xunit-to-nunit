@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using Xunit.Abstractions;
 
 [TestFixture]
 public class SomeTests

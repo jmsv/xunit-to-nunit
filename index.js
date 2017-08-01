@@ -1,5 +1,5 @@
 var fs = require('fs');
-var path = require("path");
+var path = require('path');
 var glob = require('glob');
 
 
@@ -108,7 +108,7 @@ function addTestFixtureLine(line) {
 // Remove line from list of lines if matches search string
 function removeLineFromList(linesList, searchString) {
   for (var i = linesList.length - 1; i--;) {
-    if (linesList[i] === searchString) linesList.splice(i, 1);
+    if (linesList[i].indexOf(searchString) > -1) linesList.splice(i, 1);
   }
   return linesList;
 }
@@ -158,10 +158,11 @@ module.exports.convertFile = function (source, destination) {
 };
 
 
-module.exports.convertFiles = function (sourceDir, destinationDir, options={}) {
+module.exports.convertFiles = function (sourceDir, destinationDir, options) {
   optionsTemplate = {
     recursive: false
   };
+  options = options || optionsTemplate;
 
   for (var key in optionsTemplate) {
     if (!optionsTemplate.hasOwnProperty(key)) continue;
@@ -172,7 +173,7 @@ module.exports.convertFiles = function (sourceDir, destinationDir, options={}) {
   }
 
   if (!fs.existsSync(destinationDir)){
-    throw new Error("NUnit destination doesn't exist. Please create the directory: " + dir);
+    throw new Error("NUnit destination doesn't exist. Please create the directory: " + destinationDir);
   }
 
   var recurPath = "";
