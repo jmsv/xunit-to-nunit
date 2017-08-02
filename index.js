@@ -1,3 +1,4 @@
+var log = require('color-log');
 var fs = require('fs');
 var path = require('path');
 var glob = require('glob');
@@ -147,12 +148,25 @@ module.exports.convertCode = function (codeIn) {
 
 
 // Method to convert test in file
-module.exports.convertFile = function (source, destination) {
-  var data = fs.readFileSync(source, 'utf-8');
+module.exports.convertFile = function (source, destination, verbose) {
+  var data = '';
+  try {
+    data = fs.readFileSync(source, 'utf-8');
+  } catch (e) {
+    log.error('error loading file:  ' + source);
+    throw e;
+  }
 
   var converted = module.exports.convertCode(data);
 
-  fs.writeFileSync(destination, converted, 'utf-8');
+  try {
+    fs.writeFileSync(destination, converted, 'utf-8');
+  } catch (e) {
+    log.error('error writing file:  ' + destination);
+    throw e;
+  }
+
+  if (verbose) log.info('test saved to ' + destination + ' successfully');
 
   return true;
 };
@@ -160,7 +174,8 @@ module.exports.convertFile = function (source, destination) {
 
 module.exports.convertFiles = function (sourceDir, destinationDir, options) {
   optionsTemplate = {
-    recursive: false
+    recursive: false,
+    verbose: true
   };
   options = options || optionsTemplate;
 
@@ -178,16 +193,19 @@ module.exports.convertFiles = function (sourceDir, destinationDir, options) {
 
   var recurPath = "";
   if (options.recursive) recurPath = "/**";
+
   // Get source file paths, taking into account whether or not to recur into subdirs
   var sourcePaths = glob.sync(sourceDir + recurPath + "/*.cs");
-  // Resolve to absolute paths
-  for (var i = 0; i < sourcePaths.length; i++) sourcePaths[i] = path.resolve(sourcePaths[i]);
+
+  for (var i = 0; i < sourcePaths.length; i++) {
+    // Resolve to absolute paths
+    sourcePaths[i] = path.resolve(sourcePaths[i]);
+  }
 
   files = [];
   for (var i = 0; i < sourcePaths.length; i++) {
     var relativePath = sourcePaths[i].replace(path.resolve(sourceDir), '');
 
-    // var dir = __dirname + "/";
     files.push({
       sourcePath: sourcePaths[i],
       relativePath: relativePath,
@@ -199,7 +217,7 @@ module.exports.convertFiles = function (sourceDir, destinationDir, options) {
       fs.mkdirSync(dir);
     }
 
-    module.exports.convertFile(files[i].sourcePath, files[i].destinationPath);
+    module.exports.convertFile(files[i].sourcePath, files[i].destinationPath, options.verbose);
   }
 
   return true;
