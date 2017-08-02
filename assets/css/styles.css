@@ -130,4 +130,5 @@ footer p {
     top: 0;
     right: 0;
     margin: 8px 10px;
+    z-index: 10;
 }
