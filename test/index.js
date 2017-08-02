@@ -1,3 +1,4 @@
+var fs = require('fs');
 var dirsum = require('dirsum');
 var path = require('path');
 var should = require('chai').should(),
@@ -62,6 +63,30 @@ public class SomeTests
 }];
 
 
+var deleteFolderRecursive = function(path) {
+  if( fs.existsSync(path) ) {
+    fs.readdirSync(path).forEach(function(file,index){
+      var curPath = path + "/" + file;
+      if(fs.lstatSync(curPath).isDirectory()) {
+        deleteFolderRecursive(curPath);
+      } else {
+        fs.unlinkSync(curPath);
+      }
+    });
+    fs.rmdirSync(path);
+  }
+};
+
+
+var resetDir = function(path) {
+  deleteFolderRecursive(path);
+
+  if (!fs.existsSync(path)){
+    fs.mkdirSync(path);
+  }
+};
+
+
 describe('#convertCode', function () {
   it('example test is converted correctly', function () {
     convertCode(testCases[0].xunit).should.equal(testCases[0].nunit);
@@ -110,6 +135,8 @@ describe('#convertFile', function () {
       filepath: true
     };
 
+    resetDir(path.dirname(paths.destination));
+
     convertFile(paths.source, paths.destination).should.equal(true);
 
     dirsAreEqual(paths, function(result) {
@@ -135,6 +162,8 @@ describe('#convertFiles', function () {
       filepath: false
     };
 
+    resetDir(paths.destination);
+
     convertFiles(paths.source, paths.destination, opt);
 
     dirsAreEqual(paths, function(result) {
@@ -159,6 +188,8 @@ describe('#convertFiles', function () {
       filepath: false
     };
 
+    resetDir(paths.destination);
+
     convertFiles(paths.source, paths.destination, opt);
 
     dirsAreEqual(paths, function(result) {
@@ -179,6 +210,8 @@ describe('#convertFiles', function () {
       expected: 'test/test4/nunit-expected',
       filepath: false
     };
+
+    resetDir(paths.destination);
 
     convertFiles(paths.source, paths.destination);
 
