@@ -210,22 +210,22 @@ module.exports.convertFiles = function (sourceDir, destinationDir, options) {
   }
 
   files = [];
-  for (var i = 0; i < sourcePaths.length; i++) {
-    var relativePath = sourcePaths[i].replace(path.resolve(sourceDir), '');
+  for (var j = 0; j < sourcePaths.length; j++) {
+    var relativePath = sourcePaths[j].replace(path.resolve(sourceDir), '');
 
     files.push({
-      sourcePath: sourcePaths[i],
+      sourcePath: sourcePaths[j],
       relativePath: relativePath,
       destinationPath: destinationDir + relativePath,
     });
 
-    var dir = path.dirname(files[i].destinationPath);
+    var dir = path.dirname(files[j].destinationPath);
     if (!fs.existsSync(dir)){
       fs.mkdirSync(dir);
     }
 
-    module.exports.convertFile(files[i].sourcePath, files[i].destinationPath, options.verbose);
+    module.exports.convertFile(files[j].sourcePath, files[j].destinationPath, options.verbose);
   }
 
   return true;
-}
+};
