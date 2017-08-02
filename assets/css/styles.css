@@ -33,7 +33,7 @@ a {
 
 header {
     text-align: center;
-    margin-bottom: 1em;
+    margin-bottom: 0.4em;
     text-shadow: 0 3px 2px rgba(0, 0, 0, 0.1);
 }
 
@@ -56,7 +56,7 @@ a:hover {
     width: 100%;
     height: 100%;
     position: absolute;
-    padding: 1.8em;
+    padding: 1em;
     padding-bottom: 0em;
 }
 
@@ -125,10 +125,16 @@ footer p {
     color: #888;
 }
 
-.topcorner {
+#topcorner {
     position: absolute;
     top: 0;
     right: 0;
     margin: 8px 10px;
     z-index: 10;
+}
+
+@media only screen and (max-width: 625px) {
+    #topcorner {
+        display: none;
+    }
 }
