@@ -28,12 +28,12 @@
   "homepage": "https://github.com/jamesevickery/xunit-to-nunit#readme",
   "devDependencies": {
     "chai": "^4.1.0",
+    "dirsum": "^0.1.1",
     "jshint": "^2.9.5",
     "mocha": "^3.4.2"
   },
   "dependencies": {
     "color-log": "0.0.2",
-    "dirsum": "^0.1.1",
     "glob": "^7.1.2"
   }
 }
