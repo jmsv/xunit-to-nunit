@@ -149,24 +149,31 @@ module.exports.convertCode = function (codeIn) {
 
 // Method to convert test in file
 module.exports.convertFile = function (source, destination, verbose) {
+  verbose = verbose | true;
   var data = '';
   try {
     data = fs.readFileSync(source, 'utf-8');
   } catch (e) {
-    log.error('error loading file:  ' + source);
+    log.error('Error loading file:  ' + source);
     throw e;
   }
 
-  var converted = module.exports.convertCode(data);
+  var converted = '';
+  try {
+    converted = module.exports.convertCode(data);
+  } catch (e) {
+    log.error('Error converting test');
+    throw e;
+  }
 
   try {
     fs.writeFileSync(destination, converted, 'utf-8');
   } catch (e) {
-    log.error('error writing file:  ' + destination);
+    log.error('Error writing file:  ' + destination);
     throw e;
   }
 
-  if (verbose) log.info('test saved to ' + destination + ' successfully');
+  if (verbose) log.info('Test saved to ' + destination + ' successfully');
 
   return true;
 };
