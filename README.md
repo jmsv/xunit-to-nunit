@@ -19,7 +19,7 @@ _Disclaimer: Far from perfect - something I used as a quick hack to convert load
 ## :package: Installation
 
 ```bash
-npm install xunit-to-nunit --save
+npm install xunit-to-nunit
 ```
 
 ## Usage
