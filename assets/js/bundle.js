@@ -5329,6 +5329,60 @@ var path = require('path');
 var glob = require('glob');
 
 
+module.exports.examples = [{
+  xunit: `using Xunit;
+using Xunit.Abstractions;
+
+public class SomeTests
+{
+    [Fact]
+    public void Test1()
+    {
+        string testString = "avocado";
+
+        Assert.NotEmpty(testString);
+        Assert.Equal("avocado", testString);
+        Assert.NotEqual("potato", testString);
+    }
+ 
+    [Theory]
+    [InlineData(5, 15)]
+    [InlineData(6, 18)]
+    [InlineData(7, 21)]
+    public void Test2(int number1, int number2)
+    {
+        var result = number2 / number1;
+        Assert.Equal(3, result);
+    }
+}`,
+  nunit: `using NUnit.Framework;
+
+[TestFixture]
+public class SomeTests
+{
+    [Test]
+    public void Test1()
+    {
+        string testString = "avocado";
+
+        Assert.IsNotEmpty(testString);
+        Assert.AreEqual("avocado", testString);
+        Assert.AreNotEqual("potato", testString);
+    }
+ 
+    [Test]
+    [TestCase(5, 15)]
+    [TestCase(6, 18)]
+    [TestCase(7, 21)]
+    public void Test2(int number1, int number2)
+    {
+        var result = number2 / number1;
+        Assert.AreEqual(3, result);
+    }
+}`
+}];
+
+
 // Assert calls to be converted are listed here
 var assertsList = [{
     XUnitAssert: 'Equal',
@@ -5421,13 +5475,18 @@ function convertLineAssert(line) {
 
 
 // Adds [TestFixture] above classes named {name}Facts or {name}Tests
-function addTestFixtureLine(line) {
-  if (/^( *public *class \w+(Facts|Tests) *)/.test(line)) {
-    var spaces = '';
-    for (var i = 0; i < line.search(/\S/); i++) spaces += ' ';
-    line = spaces + '[TestFixture]\n' + line;
+function addTestFixtureAttributes(lines) {
+  for (var i = 0; i < lines.length; i++) {
+    if (/^( *public *class \w+(Facts|Tests) *)/.test(lines[i])) {
+      if (!(i > 0 && lines[i-1].indexOf('[TestFixture]') > -1)) {
+        var spaces = '';
+        for (var j = 0; j < lines[i].search(/\S/); j++) spaces += ' ';
+
+        lines[i] = spaces + '[TestFixture]\n' + lines[i];
+      }
+    }
   }
-  return line;
+  return lines;
 }
 
 
@@ -5443,7 +5502,6 @@ function removeLineFromList(linesList, searchString) {
 // Convert line from XUnit syntax to NUnit syntax, including Assert statements
 module.exports.convertLine = function (line) {
   line = convertLineAssert(line);
-  line = addTestFixtureLine(line);
 
   for (var i = 0; i < otherSyntaxDifferenceList.length; i++) {
     var x = otherSyntaxDifferenceList[i].XUnitSyntax;
@@ -5464,6 +5522,7 @@ module.exports.convertCode = function (codeIn) {
     codeLines[i] = module.exports.convertLine(codeLines[i]);
   }
 
+  codeLines = addTestFixtureAttributes(codeLines);
   codeLines = removeLineFromList(codeLines, 'using Xunit.Abstractions;');
 
   // Join list of lines to form newline seperated string
@@ -5474,7 +5533,7 @@ module.exports.convertCode = function (codeIn) {
 
 // Method to convert test in file
 module.exports.convertFile = function (source, destination, verbose) {
-  verbose = verbose | true;
+  if (verbose == null) verbose = true;
   var data = '';
   try {
     data = fs.readFileSync(source, 'utf-8');
@@ -5535,23 +5594,24 @@ module.exports.convertFiles = function (sourceDir, destinationDir, options) {
   }
 
   files = [];
-  for (var i = 0; i < sourcePaths.length; i++) {
-    var relativePath = sourcePaths[i].replace(path.resolve(sourceDir), '');
+  for (var j = 0; j < sourcePaths.length; j++) {
+    var relativePath = sourcePaths[j].replace(path.resolve(sourceDir), '');
 
     files.push({
-      sourcePath: sourcePaths[i],
+      sourcePath: sourcePaths[j],
       relativePath: relativePath,
       destinationPath: destinationDir + relativePath,
     });
 
-    var dir = path.dirname(files[i].destinationPath);
+    var dir = path.dirname(files[j].destinationPath);
     if (!fs.existsSync(dir)){
       fs.mkdirSync(dir);
     }
 
-    module.exports.convertFile(files[i].sourcePath, files[i].destinationPath, options.verbose);
+    module.exports.convertFile(files[j].sourcePath, files[j].destinationPath, options.verbose);
   }
 
   return true;
-}
+};
+
 },{"color-log":12,"fs":1,"glob":18,"path":4}]},{},[9]);
