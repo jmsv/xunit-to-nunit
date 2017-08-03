@@ -16,7 +16,7 @@ _Disclaimer: Far from perfect - something I used as a quick hack to convert load
 - Interactive converter app ([gh-pages](https://github.com/jamesevickery/xunit-to-nunit/tree/gh-pages)): [jamesevickery.github.io/xunit-to-nunit](https://jamesevickery.github.io/xunit-to-nunit)
 - Node module: [npmjs.com/package/xunit-to-nunit](https://www.npmjs.com/package/xunit-to-nunit)
 
-## Installation
+## :package: Installation
 
 ```bash
 npm install xunit-to-nunit --save
@@ -52,13 +52,22 @@ This function calls `convertFile` for all files in the source directory.
 
 #### Options
 
-`convertFiles` has a third (optional) parameter: `options`. This should be a dictionary value, containing options parameters: at the moment, `recursive` is the only options parameter, which defaults to `false`. Set to `true`, this parameter will convert tests in all subdirectories including those at the source root.
+`convertFiles` has a third (optional) parameter: `options`. This should be a dictionary value, containing all or any of the following  parameters:
+
+##### :wrench: recursive (default: `false`)
+
+Set to `true`, this parameter will convert tests in all subdirectories including those at the source root. Directory structure is maintained at the conversion destination.
+
+##### :wrench: verbose (default: `true`)
+
+When `true`, the module logs an info message to the terminal when a file is converted. When a file conversion fails, a error log message is displayed regardless of the value of `verbose`.
 
 For example,
 
 ```javascript
 var options = {
-  recursive: true
+  recursive: true,
+  verbose: false
 }
 x2n.convertFiles('xunit/source/directory', 'nunit/destination/directory', options)
 ```
