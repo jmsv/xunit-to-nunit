@@ -150,13 +150,18 @@ function convertLineAssert(line) {
 
 
 // Adds [TestFixture] above classes named {name}Facts or {name}Tests
-function addTestFixtureLine(line) {
-  if (/^( *public *class \w+(Facts|Tests) *)/.test(line)) {
-    var spaces = '';
-    for (var i = 0; i < line.search(/\S/); i++) spaces += ' ';
-    line = spaces + '[TestFixture]\n' + line;
+function addTestFixtureAttributes(lines) {
+  for (var i = 0; i < lines.length; i++) {
+    if (/^( *public *class \w+(Facts|Tests) *)/.test(lines[i])) {
+      if (!(i > 0 && lines[i-1].indexOf('[TestFixture]') > -1)) {
+        var spaces = '';
+        for (var j = 0; j < lines[i].search(/\S/); j++) spaces += ' ';
+
+        lines[i] = spaces + '[TestFixture]\n' + lines[i];
+      }
+    }
   }
-  return line;
+  return lines;
 }
 
 
@@ -172,7 +177,6 @@ function removeLineFromList(linesList, searchString) {
 // Convert line from XUnit syntax to NUnit syntax, including Assert statements
 module.exports.convertLine = function (line) {
   line = convertLineAssert(line);
-  line = addTestFixtureLine(line);
 
   for (var i = 0; i < otherSyntaxDifferenceList.length; i++) {
     var x = otherSyntaxDifferenceList[i].XUnitSyntax;
@@ -193,6 +197,7 @@ module.exports.convertCode = function (codeIn) {
     codeLines[i] = module.exports.convertLine(codeLines[i]);
   }
 
+  codeLines = addTestFixtureAttributes(codeLines);
   codeLines = removeLineFromList(codeLines, 'using Xunit.Abstractions;');
 
   // Join list of lines to form newline seperated string
@@ -203,7 +208,7 @@ module.exports.convertCode = function (codeIn) {
 
 // Method to convert test in file
 module.exports.convertFile = function (source, destination, verbose) {
-  verbose = verbose | true;
+  if (verbose == null) verbose = true;
   var data = '';
   try {
     data = fs.readFileSync(source, 'utf-8');

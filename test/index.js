@@ -37,6 +37,14 @@ describe('#convertCode', function () {
   it('example test is converted correctly', function () {
     convertCode(x2n.examples[0].xunit).should.equal(x2n.examples[0].nunit);
   });
+
+  it('shouldn\'t add a TestFixture where there already is one', function () {
+    var testcase = {
+      xunit: 'using Xunit;\n[TestFixture]\npublic class SomeTests\n{\n}',
+      nunit: 'using NUnit.Framework;\n[TestFixture]\npublic class SomeTests\n{\n}'
+    };
+    convertCode(testcase.xunit).should.equal(testcase.nunit);
+  });
 });
 
 
@@ -83,7 +91,7 @@ describe('#convertFile', function () {
 
     resetDir(path.dirname(paths.destination));
 
-    convertFile(paths.source, paths.destination).should.equal(true);
+    convertFile(paths.source, paths.destination, verbose=false).should.equal(true);
 
     dirsAreEqual(paths, function(result) {
       should.equal(result.actual.err, undefined);
@@ -99,7 +107,8 @@ describe('#convertFile', function () {
 describe('#convertFiles', function () {
   it('can convert test files (rel paths)', function (done) {
     var opt = {
-      recursive: true
+      recursive: true,
+      verbose: false
     };
     var paths = {
       source: 'test/test2/xunit',
@@ -125,7 +134,8 @@ describe('#convertFiles', function () {
 
   it('can convert test files (abs paths)', function (done) {
     var opt = {
-      recursive: true
+      recursive: true,
+      verbose: false
     };
     var paths = {
       source: __dirname + '/test3/xunit',
@@ -137,29 +147,6 @@ describe('#convertFiles', function () {
     resetDir(paths.destination);
 
     convertFiles(paths.source, paths.destination, opt);
-
-    dirsAreEqual(paths, function(result) {
-      should.equal(result.actual.err, undefined);
-      should.equal(result.expected.err, undefined);
-      result.actual.res.should.not.equal(undefined);
-      result.actual.res.hash.should.equal(result.expected.res.hash);
-      done();
-    });
-
-  });
-
-
-  it('can convert test files (no options param)', function (done) {
-    var paths = {
-      source: 'test/test4/xunit',
-      destination: 'test/test4/nunit-actual',
-      expected: 'test/test4/nunit-expected',
-      filepath: false
-    };
-
-    resetDir(paths.destination);
-
-    convertFiles(paths.source, paths.destination);
 
     dirsAreEqual(paths, function(result) {
       should.equal(result.actual.err, undefined);
