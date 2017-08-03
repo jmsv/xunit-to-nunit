@@ -1,6 +1,6 @@
 {
   "name": "xunit-to-nunit",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Converts C# XUnit tests to NUnit tests",
   "main": "index.js",
   "scripts": {
