@@ -13,7 +13,7 @@ _Disclaimer: Far from perfect - something I used as a quick hack to convert load
 
 ## Links
 
-- Interactive converter app ([gh-pages](https://github.com/jamesevickery/xunit-to-nunit/tree/gh-pages)): [jamesevickery.github.io/xunit-to-nunit](https://jamesevickery.github.io/xunit-to-nunit)
+- Converter app: [jamesevickery.github.io/xunit-to-nunit](https://jamesevickery.github.io/xunit-to-nunit)
 - Node module: [npmjs.com/package/xunit-to-nunit](https://www.npmjs.com/package/xunit-to-nunit)
 
 ## :package: Installation
