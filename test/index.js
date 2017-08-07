@@ -1,5 +1,6 @@
 var fs = require('fs');
-var dirsum = require('dirsum');
+// var dirsum = require('dirsum');
+var dircompare = require('dir-compare');
 var path = require('path');
 var should = require('chai').should(),
   x2n = require('../index'),
@@ -55,33 +56,24 @@ describe('#convertLine', function () {
 });
 
 
-function dirsAreEqual(paths, callback) {
+function dirsAreEqual(paths) {
   if (paths.filepath) { // Remove filename
     paths.destination = path.dirname(paths.destination);
     paths.expected = path.dirname(paths.expected);
   }
 
-  dirsum.digest(paths.destination, 'sha1', function (err1, res1) {
-    dirsum.digest(paths.expected, 'sha1', function (err2, res2) {
-      result = {
-        actual: {
-          err: err1,
-          res: res1
-        },
-        expected: {
-          err: err2,
-          res: res2
-        }
-      };
-      // console.log(result.actual.res.hash + "  |  " + result.expected.res.hash);
-      callback(result);
-    });
-  });
+  var options = {
+    compareSize: true,
+    compareContent: true
+  };
+
+  var result = dircompare.compareSync(paths.destination, paths.expected);
+  return result.same;
 }
 
 
 describe('#convertFile', function () {
-  it('can convert test file', function (done) {
+  it('can convert test file', function () {
     var paths = {
       source: 'test/test1/xunit/test.cs',
       destination: 'test/test1/nunit-actual/test.cs',
@@ -93,19 +85,13 @@ describe('#convertFile', function () {
 
     convertFile(paths.source, paths.destination, verbose=false).should.equal(true);
 
-    dirsAreEqual(paths, function(result) {
-      should.equal(result.actual.err, undefined);
-      should.equal(result.expected.err, undefined);
-      result.actual.res.should.not.equal(undefined);
-      result.actual.res.hash.should.equal(result.expected.res.hash);
-      done();
-    });
+    dirsAreEqual(paths).should.equal(true);
   });
 });
 
 
 describe('#convertFiles', function () {
-  it('can convert test files (rel paths)', function (done) {
+  it('can convert test files (rel paths)', function () {
     var opt = {
       recursive: true,
       verbose: false
@@ -121,18 +107,11 @@ describe('#convertFiles', function () {
 
     convertFiles(paths.source, paths.destination, opt);
 
-    dirsAreEqual(paths, function(result) {
-      should.equal(result.actual.err, undefined);
-      should.equal(result.expected.err, undefined);
-      result.actual.res.should.not.equal(undefined);
-      result.actual.res.hash.should.equal(result.expected.res.hash);
-      done();
-    });
-
+    dirsAreEqual(paths).should.equal(true);
   });
 
 
-  it('can convert test files (abs paths)', function (done) {
+  it('can convert test files (abs paths)', function () {
     var opt = {
       recursive: true,
       verbose: false
@@ -148,14 +127,7 @@ describe('#convertFiles', function () {
 
     convertFiles(paths.source, paths.destination, opt);
 
-    dirsAreEqual(paths, function(result) {
-      should.equal(result.actual.err, undefined);
-      should.equal(result.expected.err, undefined);
-      result.actual.res.should.not.equal(undefined);
-      result.actual.res.hash.should.equal(result.expected.res.hash);
-      done();
-    });
-
+    dirsAreEqual(paths).should.equal(true);
   });
 
 });
