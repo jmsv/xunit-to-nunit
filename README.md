@@ -69,12 +69,13 @@ var options = {
   recursive: true,
   verbose: false
 }
+
 x2n.convertFiles('xunit/source/directory', 'nunit/destination/directory', options)
 ```
 
 #### Writing converted tests to source directory
 
-When source = destination, '`_NUnit`' is appended to the filename. For example, where destination = `dir`, `dir/SomeTests.cs` is converted and the result is written to `dir/SomeTests_NUnit.cs`.
+When _source = destination_, '`_NUnit`' is appended to the filename. For example, where _destination = `dir`_, `dir/SomeTests.cs` is converted and the result is written to `dir/SomeTests_NUnit.cs`.
 
 This behaviour can be changed with the following parameters:
 
@@ -84,7 +85,25 @@ String to be appended to filenames when writing destination files to the source 
 
 ##### :wrench: overwrite (default: `false`)
 
-If `overwrite` is true, `append` is ignored, and source files are overwritten at destination.
+If _`overwrite` = true_, `append` is ignored, and source files are overwritten at destination.
+
+For example,
+
+```javascript
+// Append destination filenames with `append` text
+var options = {
+  append: '_Test',
+  overwrite: false
+}
+
+// or, overwrite source files
+var options = {
+  overwrite: true
+}
+
+x2n.convertFiles('xunit/source/directory', 'nunit/destination/directory', options)
+
+```
 
 ## Contributing
 
