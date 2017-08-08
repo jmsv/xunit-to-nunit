@@ -149,7 +149,7 @@ function convertLineAssert(line) {
 function addTestFixtureAttributes(lines) {
   for (var i = 0; i < lines.length; i++) {
     if (/^( *public *class \w+(Facts|Tests) *)/.test(lines[i])) {
-      if (!(i > 0 && lines[i-1].indexOf('[TestFixture]') > -1)) {
+      if (!(i > 0 && lines[i - 1].indexOf('[TestFixture]') > -1)) {
         var spaces = '';
         for (var j = 0; j < lines[i].search(/\S/); j++) spaces += ' ';
 
@@ -175,7 +175,7 @@ module.exports.convertLine = function (line) {
   line = convertLineAssert(line);
 
   for (var i = 0; i < otherSyntaxDifferenceList.length; i++) {
-    for (var j = 0; j < otherSyntaxDifferenceList[i].XUnitSyntax.length; j++){
+    for (var j = 0; j < otherSyntaxDifferenceList[i].XUnitSyntax.length; j++) {
       var x = otherSyntaxDifferenceList[i].XUnitSyntax[j];
       var n = otherSyntaxDifferenceList[i].NUnitSyntax;
       line = line.replace(x, n);
@@ -251,7 +251,7 @@ module.exports.convertFiles = function (sourceDir, destinationDir, options) {
     }
   }
 
-  if (!fs.existsSync(destinationDir)){
+  if (!fs.existsSync(destinationDir)) {
     throw new Error("NUnit destination doesn't exist. Please create the directory: " + destinationDir);
   }
 
@@ -277,7 +277,7 @@ module.exports.convertFiles = function (sourceDir, destinationDir, options) {
     });
 
     var dir = path.dirname(files[j].destinationPath);
-    if (!fs.existsSync(dir)){
+    if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir);
     }
 

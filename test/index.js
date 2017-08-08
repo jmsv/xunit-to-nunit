@@ -10,11 +10,11 @@ var should = require('chai').should(),
   convertFiles = x2n.convertFiles;
 
 
-var deleteFolderRecursive = function(path) {
-  if( fs.existsSync(path) ) {
-    fs.readdirSync(path).forEach(function(file,index){
+var deleteFolderRecursive = function (path) {
+  if (fs.existsSync(path)) {
+    fs.readdirSync(path).forEach(function (file, index) {
       var curPath = path + "/" + file;
-      if(fs.lstatSync(curPath).isDirectory()) {
+      if (fs.lstatSync(curPath).isDirectory()) {
         deleteFolderRecursive(curPath);
       } else {
         fs.unlinkSync(curPath);
@@ -25,10 +25,10 @@ var deleteFolderRecursive = function(path) {
 };
 
 
-var resetDir = function(path) {
+var resetDir = function (path) {
   deleteFolderRecursive(path);
 
-  if (!fs.existsSync(path)){
+  if (!fs.existsSync(path)) {
     fs.mkdirSync(path);
   }
 };
@@ -89,7 +89,7 @@ describe('#convertFile', function () {
 
     resetDir(path.dirname(paths.destination));
 
-    convertFile(paths.source, paths.destination, verbose=false).should.equal(true);
+    convertFile(paths.source, paths.destination, verbose = false).should.equal(true);
 
     dirsAreEqual(paths).should.equal(true);
   });
