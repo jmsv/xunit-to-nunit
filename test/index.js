@@ -1,5 +1,4 @@
-var fs = require('fs');
-// var dirsum = require('dirsum');
+var fs = require("fs-extra");
 var dircompare = require('dir-compare');
 var path = require('path');
 var should = require('chai').should(),
@@ -130,6 +129,31 @@ describe('#convertFiles', function () {
     };
 
     resetDir(paths.destination);
+
+    convertFiles(paths.source, paths.destination, opt);
+
+    dirsAreEqual(paths).should.equal(true);
+  });
+
+  it('can convert tests files where source=destination', function () {
+    var opt = {
+      recursive: true,
+      verbose: false
+    };
+    var paths = {
+      source: 'test/test5/tests-actual',
+      destination: 'test/test5/tests-actual',
+      expected: 'test/test5/tests-expected',
+      filepath: false,
+      xunit: 'test/test5/xunit'
+
+    };
+
+    resetDir(paths.destination);
+
+    // Copy xunit tests to tests-actual
+    //deleteFolderRecursive(paths.destination);
+    fs.copySync(paths.xunit, paths.destination);
 
     convertFiles(paths.source, paths.destination, opt);
 
