@@ -50,8 +50,14 @@ describe('#convertCode', function () {
 
 
 describe('#convertLine', function () {
-  it('using <framework> statement converted', function () {
+  it('converts using <framework> statement', function () {
     convertLine('using Xunit;').should.equal('using NUnit.Framework;');
+  });
+
+  it('converts [Fact] and [Fact()] etc. to [Test]', function () {
+    convertLine('[Fact]').should.equal('[Test]');
+    convertLine('[Fact()]').should.equal('[Test]');
+    convertLine('    [Theory]').should.equal('    [Test]');
   });
 });
 

@@ -112,27 +112,23 @@ var assertsList = [{
 
 // Other differences between XUnit and NUnit that should be converted
 var otherSyntaxDifferenceList = [{
-    XUnitSyntax: 'using Xunit;',
+    XUnitSyntax: ['using Xunit;'],
     NUnitSyntax: 'using NUnit.Framework;'
   },
   {
-    XUnitSyntax: '[Fact]',
+    XUnitSyntax: ['[Fact]', '[Fact()]', '[Theory]', '[Theory()]'],
     NUnitSyntax: '[Test]'
   },
   {
-    XUnitSyntax: '[Theory]',
-    NUnitSyntax: '[Test]'
-  },
-  {
-    XUnitSyntax: 'InlineData(',
+    XUnitSyntax: ['InlineData('],
     NUnitSyntax: 'TestCase('
   },
   {
-    XUnitSyntax: 'ClassData(',
+    XUnitSyntax: ['ClassData('],
     NUnitSyntax: 'TestCaseSource('
   },
   {
-    XUnitSyntax: 'Assert.Contains("',
+    XUnitSyntax: ['Assert.Contains("'],
     NUnitSyntax: 'StringAssert.Contains("'
   },
 ];
@@ -179,9 +175,11 @@ module.exports.convertLine = function (line) {
   line = convertLineAssert(line);
 
   for (var i = 0; i < otherSyntaxDifferenceList.length; i++) {
-    var x = otherSyntaxDifferenceList[i].XUnitSyntax;
-    var n = otherSyntaxDifferenceList[i].NUnitSyntax;
-    line = line.replace(x, n);
+    for (var j = 0; j < otherSyntaxDifferenceList[i].XUnitSyntax.length; j++){
+      var x = otherSyntaxDifferenceList[i].XUnitSyntax[j];
+      var n = otherSyntaxDifferenceList[i].NUnitSyntax;
+      line = line.replace(x, n);
+    }
   }
 
   return line;
