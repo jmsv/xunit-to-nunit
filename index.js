@@ -4,6 +4,16 @@ var path = require('path');
 var glob = require('glob');
 
 
+String.prototype.replaceAll = function (search, replacement) {
+  var target = this;
+  return target.replace(new RegExp(search, 'g'), replacement);
+}
+String.prototype.insertAt = function (index, string) {
+  return this.substr(0, index) + string + this.substr(index);
+}
+
+
+
 module.exports.examples = [{
   xunit: `using Xunit;
 using Xunit.Abstractions;
@@ -204,9 +214,30 @@ module.exports.convertCode = function (codeIn) {
 };
 
 
+function appendFilepath(filepath, append) {
+  if (!filepath || !append) return;
+  var index = filepath.indexOf('.cs');
+  var result = filepath.insertAt(index, append);
+  return result;
+}
+
+
 // Method to convert test in file
-module.exports.convertFile = function (source, destination, verbose) {
+module.exports.convertFile = function (source, destination, verbose, overwrite, append) {
   if (verbose == null) verbose = true;
+
+  if (source == destination) {
+    if (overwrite) append = null;
+    // If something should be appended to filename
+    if (append != null) {
+      destination = appendFilepath(destination, append);
+    } else {
+      if (!overwrite) {
+        throw new Error("overwrite is false, and no `append` parameter specified.");
+      }
+    }
+  }
+
   var data = '';
   try {
     data = fs.readFileSync(source, 'utf-8');
@@ -236,10 +267,18 @@ module.exports.convertFile = function (source, destination, verbose) {
 };
 
 
+function uniformPath(path) {
+  var result = path.replaceAll('\\\\', '/');
+  return result;
+}
+
+
 module.exports.convertFiles = function (sourceDir, destinationDir, options) {
   optionsTemplate = {
     recursive: false,
-    verbose: true
+    verbose: true,
+    append: '_NUnit',
+    overwrite: false
   };
   options = options || optionsTemplate;
 
@@ -271,9 +310,9 @@ module.exports.convertFiles = function (sourceDir, destinationDir, options) {
     var relativePath = sourcePaths[j].replace(path.resolve(sourceDir), '');
 
     files.push({
-      sourcePath: sourcePaths[j],
-      relativePath: relativePath,
-      destinationPath: destinationDir + relativePath,
+      sourcePath: uniformPath(sourcePaths[j]),
+      relativePath: uniformPath(relativePath),
+      destinationPath: uniformPath(path.resolve(destinationDir + relativePath)),
     });
 
     var dir = path.dirname(files[j].destinationPath);
@@ -281,7 +320,8 @@ module.exports.convertFiles = function (sourceDir, destinationDir, options) {
       fs.mkdirSync(dir);
     }
 
-    module.exports.convertFile(files[j].sourcePath, files[j].destinationPath, options.verbose);
+    module.exports.convertFile(files[j].sourcePath, files[j].destinationPath,
+      options.verbose, options.overwrite, options.append);
   }
 
   return true;

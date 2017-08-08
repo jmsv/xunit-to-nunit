@@ -1,5 +1,4 @@
-var fs = require('fs');
-// var dirsum = require('dirsum');
+var fs = require("fs-extra");
 var dircompare = require('dir-compare');
 var path = require('path');
 var should = require('chai').should(),
@@ -130,6 +129,76 @@ describe('#convertFiles', function () {
     };
 
     resetDir(paths.destination);
+
+    convertFiles(paths.source, paths.destination, opt);
+
+    dirsAreEqual(paths).should.equal(true);
+  });
+
+  it('can convert tests files where source=destination (defaults)', function () {
+    var opt = {
+      recursive: true,
+      verbose: false
+    };
+    var paths = {
+      source: 'test/test5/tests-actual',
+      destination: 'test/test5/tests-actual',
+      expected: 'test/test5/tests-expected',
+      filepath: false,
+      xunit: 'test/test5/xunit'
+    };
+
+    resetDir(paths.destination);
+
+    fs.copySync(paths.xunit, paths.destination);
+
+    convertFiles(paths.source, paths.destination, opt);
+
+    dirsAreEqual(paths).should.equal(true);
+  });
+
+
+  it('can convert tests files where source=destination (overwrite)', function () {
+    var opt = {
+      recursive: true,
+      verbose: false,
+      overwrite: true,
+    };
+    var paths = {
+      source: 'test/test6/tests-actual',
+      destination: 'test/test6/tests-actual',
+      expected: 'test/test6/tests-expected',
+      filepath: false,
+      xunit: 'test/test6/xunit'
+    };
+
+    resetDir(paths.destination);
+
+    fs.copySync(paths.xunit, paths.destination);
+
+    convertFiles(paths.source, paths.destination, opt);
+
+    dirsAreEqual(paths).should.equal(true);
+  });
+
+
+  it('can convert tests files where source=destination (different append text)', function () {
+    var opt = {
+      recursive: true,
+      verbose: false,
+      append: '_Test'
+    };
+    var paths = {
+      source: 'test/test7/tests-actual',
+      destination: 'test/test7/tests-actual',
+      expected: 'test/test7/tests-expected',
+      filepath: false,
+      xunit: 'test/test7/xunit'
+    };
+
+    resetDir(paths.destination);
+
+    fs.copySync(paths.xunit, paths.destination);
 
     convertFiles(paths.source, paths.destination, opt);
 
