@@ -72,6 +72,20 @@ var options = {
 x2n.convertFiles('xunit/source/directory', 'nunit/destination/directory', options)
 ```
 
+#### Writing converted tests to source directory
+
+When source = destination, '`_NUnit`' is appended to the filename. For example, where destination = `dir`, `dir/SomeTests.cs` is converted and the result is written to `dir/SomeTests_NUnit.cs`.
+
+This behaviour can be changed with the following parameters:
+
+##### :wrench: append (default: `'_NUnit'`)
+
+String to be appended to filenames when writing destination files to the source directory.
+
+##### :wrench: overwrite (default: `false`)
+
+If `overwrite` is true, `append` is ignored, and source files are overwritten at destination.
+
 ## Contributing
 
 Feel free to add things / suggest things to be added by either [opening an issue](https://github.com/jamesevickery/xunit-to-nunit/issues) or by submitting a pull request.
