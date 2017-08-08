@@ -93,7 +93,7 @@ For example,
 // Append destination filenames with `append` text
 var options = {
   append: '_Test',
-  overwrite: false
+  overwrite: false // `overwrite` is false by default
 }
 
 // or, overwrite source files
