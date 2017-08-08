@@ -223,16 +223,17 @@ function appendFilepath(filepath, append) {
 
 
 // Method to convert test in file
-module.exports.convertFile = function (source, destination, verbose, overwrite, appendFilename) {
+module.exports.convertFile = function (source, destination, verbose, overwrite, append) {
   if (verbose == null) verbose = true;
 
   if (source == destination) {
+    if (overwrite) append = null;
     // If something should be appended to filename
-    if (appendFilename != null) {
-      destination = appendFilepath(destination, appendFilename);
+    if (append != null) {
+      destination = appendFilepath(destination, append);
     } else {
       if (!overwrite) {
-        throw new Error("overwrite is false, and no appendFilename parameter specified.");
+        throw new Error("overwrite is false, and no `append` parameter specified.");
       }
     }
   }
@@ -276,7 +277,7 @@ module.exports.convertFiles = function (sourceDir, destinationDir, options) {
   optionsTemplate = {
     recursive: false,
     verbose: true,
-    appendFilename: '_NUnit',
+    append: '_NUnit',
     overwrite: false
   };
   options = options || optionsTemplate;
@@ -320,7 +321,7 @@ module.exports.convertFiles = function (sourceDir, destinationDir, options) {
     }
 
     module.exports.convertFile(files[j].sourcePath, files[j].destinationPath,
-      options.verbose, options.overwrite, options.appendFilename);
+      options.verbose, options.overwrite, options.append);
   }
 
   return true;
