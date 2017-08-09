@@ -5329,6 +5329,16 @@ var path = require('path');
 var glob = require('glob');
 
 
+String.prototype.replaceAll = function (search, replacement) {
+  var target = this;
+  return target.replace(new RegExp(search, 'g'), replacement);
+}
+String.prototype.insertAt = function (index, string) {
+  return this.substr(0, index) + string + this.substr(index);
+}
+
+
+
 module.exports.examples = [{
   xunit: `using Xunit;
 using Xunit.Abstractions;
@@ -5437,27 +5447,23 @@ var assertsList = [{
 
 // Other differences between XUnit and NUnit that should be converted
 var otherSyntaxDifferenceList = [{
-    XUnitSyntax: 'using Xunit;',
+    XUnitSyntax: ['using Xunit;'],
     NUnitSyntax: 'using NUnit.Framework;'
   },
   {
-    XUnitSyntax: '[Fact]',
+    XUnitSyntax: ['[Fact]', '[Fact()]', '[Theory]', '[Theory()]'],
     NUnitSyntax: '[Test]'
   },
   {
-    XUnitSyntax: '[Theory]',
-    NUnitSyntax: '[Test]'
-  },
-  {
-    XUnitSyntax: 'InlineData(',
+    XUnitSyntax: ['InlineData('],
     NUnitSyntax: 'TestCase('
   },
   {
-    XUnitSyntax: 'ClassData(',
+    XUnitSyntax: ['ClassData('],
     NUnitSyntax: 'TestCaseSource('
   },
   {
-    XUnitSyntax: 'Assert.Contains("',
+    XUnitSyntax: ['Assert.Contains("'],
     NUnitSyntax: 'StringAssert.Contains("'
   },
 ];
@@ -5478,7 +5484,7 @@ function convertLineAssert(line) {
 function addTestFixtureAttributes(lines) {
   for (var i = 0; i < lines.length; i++) {
     if (/^( *public *class \w+(Facts|Tests) *)/.test(lines[i])) {
-      if (!(i > 0 && lines[i-1].indexOf('[TestFixture]') > -1)) {
+      if (!(i > 0 && lines[i - 1].indexOf('[TestFixture]') > -1)) {
         var spaces = '';
         for (var j = 0; j < lines[i].search(/\S/); j++) spaces += ' ';
 
@@ -5504,9 +5510,11 @@ module.exports.convertLine = function (line) {
   line = convertLineAssert(line);
 
   for (var i = 0; i < otherSyntaxDifferenceList.length; i++) {
-    var x = otherSyntaxDifferenceList[i].XUnitSyntax;
-    var n = otherSyntaxDifferenceList[i].NUnitSyntax;
-    line = line.replace(x, n);
+    for (var j = 0; j < otherSyntaxDifferenceList[i].XUnitSyntax.length; j++) {
+      var x = otherSyntaxDifferenceList[i].XUnitSyntax[j];
+      var n = otherSyntaxDifferenceList[i].NUnitSyntax;
+      line = line.replace(x, n);
+    }
   }
 
   return line;
@@ -5531,9 +5539,30 @@ module.exports.convertCode = function (codeIn) {
 };
 
 
+function appendFilepath(filepath, append) {
+  if (!filepath || !append) return;
+  var index = filepath.indexOf('.cs');
+  var result = filepath.insertAt(index, append);
+  return result;
+}
+
+
 // Method to convert test in file
-module.exports.convertFile = function (source, destination, verbose) {
+module.exports.convertFile = function (source, destination, verbose, overwrite, append) {
   if (verbose == null) verbose = true;
+
+  if (source == destination) {
+    if (overwrite) append = null;
+    // If something should be appended to filename
+    if (append != null) {
+      destination = appendFilepath(destination, append);
+    } else {
+      if (!overwrite) {
+        throw new Error("overwrite is false, and no `append` parameter specified.");
+      }
+    }
+  }
+
   var data = '';
   try {
     data = fs.readFileSync(source, 'utf-8');
@@ -5563,10 +5592,18 @@ module.exports.convertFile = function (source, destination, verbose) {
 };
 
 
+function uniformPath(path) {
+  var result = path.replaceAll('\\\\', '/');
+  return result;
+}
+
+
 module.exports.convertFiles = function (sourceDir, destinationDir, options) {
   optionsTemplate = {
     recursive: false,
-    verbose: true
+    verbose: true,
+    append: '_NUnit',
+    overwrite: false
   };
   options = options || optionsTemplate;
 
@@ -5578,7 +5615,7 @@ module.exports.convertFiles = function (sourceDir, destinationDir, options) {
     }
   }
 
-  if (!fs.existsSync(destinationDir)){
+  if (!fs.existsSync(destinationDir)) {
     throw new Error("NUnit destination doesn't exist. Please create the directory: " + destinationDir);
   }
 
@@ -5598,20 +5635,20 @@ module.exports.convertFiles = function (sourceDir, destinationDir, options) {
     var relativePath = sourcePaths[j].replace(path.resolve(sourceDir), '');
 
     files.push({
-      sourcePath: sourcePaths[j],
-      relativePath: relativePath,
-      destinationPath: destinationDir + relativePath,
+      sourcePath: uniformPath(sourcePaths[j]),
+      relativePath: uniformPath(relativePath),
+      destinationPath: uniformPath(path.resolve(destinationDir + relativePath)),
     });
 
     var dir = path.dirname(files[j].destinationPath);
-    if (!fs.existsSync(dir)){
+    if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir);
     }
 
-    module.exports.convertFile(files[j].sourcePath, files[j].destinationPath, options.verbose);
+    module.exports.convertFile(files[j].sourcePath, files[j].destinationPath,
+      options.verbose, options.overwrite, options.append);
   }
 
   return true;
 };
-
 },{"color-log":12,"fs":1,"glob":18,"path":4}]},{},[9]);
