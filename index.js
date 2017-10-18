@@ -294,11 +294,11 @@ module.exports.convertFiles = function (sourceDir, destinationDir, options) {
     throw new Error("NUnit destination doesn't exist. Please create the directory: " + destinationDir);
   }
 
-  var recurPath = "";
-  if (options.recursive) recurPath = "/**";
+  var recursePath = "";
+  if (options.recursive) recursePath = "/**";
 
-  // Get source file paths, taking into account whether or not to recur into subdirs
-  var sourcePaths = glob.sync(sourceDir + recurPath + "/*.cs");
+  // Get source file paths, taking into account whether to recurse into subdirs
+  var sourcePaths = glob.sync(sourceDir + recursePath + "/*.cs");
 
   for (var i = 0; i < sourcePaths.length; i++) {
     // Resolve to absolute paths
