@@ -1,8 +1,7 @@
 # xunit-to-nunit
 
 [![npm version](https://badge.fury.io/js/xunit-to-nunit.svg)](https://badge.fury.io/js/xunit-to-nunit)
-[![circleci status](https://circleci.com/gh/jamesevickery/xunit-to-nunit.svg?style=shield)](https://circleci.com/gh/jamesevickery/xunit-to-nunit)
-[![Build Status](https://travis-ci.org/jamesevickery/xunit-to-nunit.svg?branch=master)](https://travis-ci.org/jamesevickery/xunit-to-nunit)
+[![Build Status](https://travis-ci.org/jmsv/xunit-to-nunit.svg?branch=master)](https://travis-ci.org/jmsv/xunit-to-nunit)
 [![Dependencies](https://www.versioneye.com/user/projects/59819587368b080078e5cabc/badge.svg)](https://www.versioneye.com/user/projects/59819587368b080078e5cabc?child=summary)
 
 [![NPM](https://nodei.co/npm/xunit-to-nunit.png)](https://nodei.co/npm/xunit-to-nunit/)
@@ -13,7 +12,7 @@ _Disclaimer: Far from perfect - something I used as a quick hack to convert load
 
 ## Links
 
-- Converter app: [jamesevickery.github.io/xunit-to-nunit](https://jamesevickery.github.io/xunit-to-nunit)
+- Converter app: [jmsv.github.io/xunit-to-nunit](https://jmsv.github.io/xunit-to-nunit)
 - Node module: [npmjs.com/package/xunit-to-nunit](https://www.npmjs.com/package/xunit-to-nunit)
 
 ## :package: Installation
@@ -107,7 +106,7 @@ x2n.convertFiles('xunit/source/directory', 'nunit/destination/directory', option
 
 ## Contributing
 
-Feel free to add things / suggest things to be added by either [opening an issue](https://github.com/jamesevickery/xunit-to-nunit/issues) or by submitting a pull request.
+Feel free to add things / suggest things to be added by either [opening an issue](https://github.com/jmsv/xunit-to-nunit/issues) or by submitting a pull request.
 
 ## References
 
