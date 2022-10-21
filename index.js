@@ -7,10 +7,10 @@ var glob = require('glob');
 String.prototype.replaceAll = function (search, replacement) {
   var target = this;
   return target.replace(new RegExp(search, 'g'), replacement);
-}
+};
 String.prototype.insertAt = function (index, string) {
   return this.substr(0, index) + string + this.substr(index);
-}
+};
 
 
 
@@ -29,7 +29,7 @@ public class SomeTests
         Assert.Equal("avocado", testString);
         Assert.NotEqual("potato", testString);
     }
- 
+
     [Theory]
     [InlineData(5, 15)]
     [InlineData(6, 18)]
@@ -54,7 +54,7 @@ public class SomeTests
         Assert.AreEqual("avocado", testString);
         Assert.AreNotEqual("potato", testString);
     }
- 
+
     [Test]
     [TestCase(5, 15)]
     [TestCase(6, 18)]
