@@ -59,3 +59,7 @@ typings/
 
 # VSCode dir
 .vscode/
+
+# unit test actual files
+/nunit-actual/
+/tests-actual/

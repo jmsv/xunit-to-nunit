@@ -91,6 +91,8 @@ describe('#convertFile', function () {
     convertFile(paths.source, paths.destination, verbose = false).should.equal(true);
 
     dirsAreEqual(paths).should.equal(true);
+
+    deleteFolderRecursive('test/test1/nunit-actual');
   });
 });
 
@@ -113,6 +115,8 @@ describe('#convertFiles', function () {
     convertFiles(paths.source, paths.destination, opt);
 
     dirsAreEqual(paths).should.equal(true);
+
+    deleteFolderRecursive(paths.destination);
   });
 
 
@@ -133,7 +137,31 @@ describe('#convertFiles', function () {
     convertFiles(paths.source, paths.destination, opt);
 
     dirsAreEqual(paths).should.equal(true);
+
+    deleteFolderRecursive(paths.destination);
   });
+
+  it('can convert test files (rel paths) without recursion', function () {
+    var opt = {
+      recursive: false,
+      verbose: false
+    };
+    var paths = {
+      source: 'test/test4/xunit',
+      destination: 'test/test4/nunit-actual',
+      expected: 'test/test4/nunit-expected',
+      filepath: false
+    };
+
+    resetDir(paths.destination);
+
+    convertFiles(paths.source, paths.destination, opt);
+
+    dirsAreEqual(paths).should.equal(true);
+
+    deleteFolderRecursive(paths.destination);
+  });
+
 
   it('can convert tests files where source=destination (defaults)', function () {
     var opt = {
@@ -155,6 +183,8 @@ describe('#convertFiles', function () {
     convertFiles(paths.source, paths.destination, opt);
 
     dirsAreEqual(paths).should.equal(true);
+
+    deleteFolderRecursive(paths.destination);
   });
 
 
@@ -179,6 +209,8 @@ describe('#convertFiles', function () {
     convertFiles(paths.source, paths.destination, opt);
 
     dirsAreEqual(paths).should.equal(true);
+
+    deleteFolderRecursive(paths.destination);
   });
 
 
@@ -203,6 +235,7 @@ describe('#convertFiles', function () {
     convertFiles(paths.source, paths.destination, opt);
 
     dirsAreEqual(paths).should.equal(true);
-  });
 
+    deleteFolderRecursive(paths.destination);
+  });
 });
