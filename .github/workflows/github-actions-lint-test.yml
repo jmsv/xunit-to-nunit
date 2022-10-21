@@ -1,0 +1,23 @@
+name: Install and then run lint and test
+on: [push]
+jobs:
+  Install-Lint-Test:
+    name: 'Install and then run lint and test'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run lint
+        run: yarn lint
+
+      - name: Run unit tests
+        run: yarn test
