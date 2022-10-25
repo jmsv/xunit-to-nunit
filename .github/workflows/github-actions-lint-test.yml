@@ -1,5 +1,5 @@
 name: Install and then run lint and test
-on: [push]
+on: [push, pull_request]
 jobs:
   Install-Lint-Test:
     name: 'Install and then run lint and test'
