@@ -141,6 +141,10 @@ var otherSyntaxDifferenceList = [{
     XUnitSyntax: ['Assert.Contains("'],
     NUnitSyntax: 'StringAssert.Contains("'
   },
+  {
+    XUnitSyntax: [/Assert.Single\((.*)?\);/g],
+    NUnitSyntax: 'Assert.That($1, Has.One.Items);'
+  },
 ];
 
 
@@ -156,14 +160,14 @@ function convertLineAssert(line) {
 
 
 // Adds [TestFixture] above classes named {name}Facts or {name}Tests
-function addTestFixtureAttributes(lines) {
+function addTestFixtureAttributes(lines, lineEnding) {
   for (var i = 0; i < lines.length; i++) {
     if (/^( *public *class \w+(Facts|Tests) *)/.test(lines[i])) {
       if (!(i > 0 && lines[i - 1].indexOf('[TestFixture]') > -1)) {
         var spaces = '';
         for (var j = 0; j < lines[i].search(/\S/); j++) spaces += ' ';
 
-        lines[i] = spaces + '[TestFixture]\n' + lines[i];
+        lines[i] = spaces + '[TestFixture]' + lineEnding + lines[i];
       }
     }
   }
@@ -198,18 +202,26 @@ module.exports.convertLine = function (line) {
 
 // Main method to convert code
 module.exports.convertCode = function (codeIn) {
-  // Split code into list, breaking at newlines
-  var codeLines = codeIn.split('\n');
+  // Determine the line ending sequence
+  var lineEnding = '\n';
+  if (codeIn.includes('\r\n')) {
+    lineEnding = '\r\n';
+  } else if (codeIn.includes('\r')) {
+    lineEnding = '\r';
+  }
+
+  // Split code into list, breaking at newlines, after consolidating them
+  var codeLines = codeIn.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
 
   for (var i = 0; i < codeLines.length; i++) {
     codeLines[i] = module.exports.convertLine(codeLines[i]);
   }
 
-  codeLines = addTestFixtureAttributes(codeLines);
+  codeLines = addTestFixtureAttributes(codeLines, lineEnding);
   codeLines = removeLineFromList(codeLines, 'using Xunit.Abstractions;');
 
-  // Join list of lines to form newline seperated string
-  var codeOut = codeLines.join('\n');
+  // Join list of lines to form CRLF separated string
+  var codeOut = codeLines.join(lineEnding);
   return codeOut;
 };
 
