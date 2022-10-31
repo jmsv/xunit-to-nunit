@@ -72,7 +72,7 @@ function dirsAreEqual(paths) {
     compareContent: true
   };
 
-  var result = dircompare.compareSync(paths.destination, paths.expected);
+  var result = dircompare.compareSync(paths.destination, paths.expected, options);
   return result.same;
 }
 
